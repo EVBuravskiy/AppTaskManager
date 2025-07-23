@@ -8,7 +8,32 @@
         Title="Менеджер задач" Height="832" Width="1288"
         MinHeight="450" MinWidth="1170"
         WindowStartupLocation="CenterScreen">
-    <Grid>
+
+    <Window.Resources>
+        <Storyboard x:Key="SlideOnLoad">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             From="0.0" To="1.0"
+                             Duration="0:0:2">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                From="0 800 0 0" To="0 0 0 0"
+                                Duration="0:0:1">
+                <ThicknessAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </ThicknessAnimation.EasingFunction>
+            </ThicknessAnimation>
+        </Storyboard>
+    </Window.Resources>
+    
+    <Grid Opacity="1" Margin="0 0 0 0">
+        <Grid.Triggers>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard Storyboard="{StaticResource SlideOnLoad}"/>
+            </EventTrigger>
+        </Grid.Triggers>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80" />
             <ColumnDefinition Width="435" />
