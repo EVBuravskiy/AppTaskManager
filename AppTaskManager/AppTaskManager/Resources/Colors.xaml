@@ -17,11 +17,16 @@
     <!--Default Text Color-->
     <SolidColorBrush x:Key="DefaultText" Color="DimGray"/>
     <!--On Accent-->
-    <SolidColorBrush x:Key="OnAccent" Color="White"/>
+    <SolidColorBrush x:Key="OnAccent" Color="WhiteSmoke"/>
     <!--Borders-->
     <SolidColorBrush x:Key="Borders" Color="#FFCCCCCC"/>
     <!--Placeholder Text Color-->
     <SolidColorBrush x:Key="PlaceholderText" Color="SlateGray"/>
+
+    <!--Navigation Buttons-->
+    <SolidColorBrush x:Key="NavButton.Default" Color="Transparent"/>
+    <SolidColorBrush x:Key="NavButton.Over" Color="DimGray" />
+    <SolidColorBrush x:Key="NavButton.Click" Color="LightGray" />
 
     <!--Task Button Colors-->
     <!--Complete Button-->

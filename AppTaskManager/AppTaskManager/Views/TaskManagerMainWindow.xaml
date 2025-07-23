@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:AppTaskManager.Views"
         mc:Ignorable="d"
         Title="Менеджер задач" Height="832" Width="1288"
+        MinHeight="450" MinWidth="1170"
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -17,6 +18,23 @@
         
         <!--Navigation panel-->
         <Rectangle Fill="{StaticResource AccentDark}" Grid.Column="0"/>
+        <StackPanel Grid.Column="0" Margin="10 15 10 10">
+            <Button Style="{StaticResource NavigationButton}">
+                <Viewbox Width="30" Height="30">
+                    <Path Data="{StaticResource ListIcon}" Fill="{StaticResource OnAccent}"/>
+                </Viewbox>
+            </Button>
+            <Button Style="{StaticResource NavigationButton}">
+                <Viewbox Width="30" Height="30">
+                    <Path Data="{StaticResource CheckIcon}" Fill="{StaticResource OnAccent}"/>
+                </Viewbox>
+            </Button>
+            <Button Style="{StaticResource NavigationButton}">
+                <Viewbox Width="35" Height="35" >
+                    <Path Data="{StaticResource TimerIcon}" Fill="{StaticResource OnAccent}"/>
+                </Viewbox>
+            </Button>
+        </StackPanel>
         
         <!--Task List Background-->
         <Rectangle Fill="{StaticResource TaskListBackground}" Grid.Column="1"/>
@@ -106,7 +124,7 @@
                         Background="{StaticResource Importance.Critical}"
                         CornerRadius="5">
                     <TextBlock Text="Критическая"
-                               Foreground="Black"
+                               Foreground="White"
                                FontWeight="DemiBold"
                                FontSize="16"/>
                 </Border>
@@ -173,5 +191,15 @@
         </Grid>
         <!--Task Status Bar-->
         <Rectangle Fill="{StaticResource TaskStatusBackground}" Grid.Column="3"/>
+
+        <!--Task Status-->
+        <Grid Grid.Column="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="230"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="140"/>
+            </Grid.RowDefinitions>
+        </Grid>
+
     </Grid>
 </Window>
