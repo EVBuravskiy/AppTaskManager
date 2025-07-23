@@ -1,0 +1,150 @@
+﻿<Window x:Class="AppTaskManager.Views.NewTaskWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AppTaskManager.Views"
+        mc:Ignorable="d"
+        Title="Создание задачи" Height="800" Width="800"
+        MinWidth="600" MinHeight="680"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="100" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            <!--Title-->
+            <TextBox x:Name="TaskTitle" Grid.Column="0"
+                 Style="{StaticResource TaskTitleBox}"
+                 BorderBrush="{StaticResource Borders}"/>
+            <Label IsHitTestVisible="False" 
+               Grid.Column="0"
+               Foreground="{StaticResource PlaceholderText}"
+               Content="Введите наименование задачи..."
+               VerticalAlignment="Center"
+               Visibility="{Binding Text.IsEmpty, ElementName=TaskTitle, Converter={StaticResource BooleatToVisibilityConverter}}"
+               Margin="30 10"/>
+            <!--Importance Combo Box-->
+            <ComboBox Grid.Column="1"
+                      Style="{StaticResource ImportanceComboBox}"/>
+
+        </Grid>
+
+        <!--Task Description Box-->
+        <TextBox x:Name="TaskDesc"
+                 Style="{StaticResource TaskDecrBox}"
+                 Grid.Row="1"
+                 VerticalContentAlignment="Top"
+                 HorizontalContentAlignment="Left"
+                 />
+        <Label IsHitTestVisible="False" 
+               Grid.Row="1" 
+               Foreground="{StaticResource PlaceholderText}"
+               Content="Введите описание задачи..."
+               VerticalAlignment="Top"
+               Visibility="{Binding Text.IsEmpty, ElementName=TaskDesc, Converter={StaticResource BooleatToVisibilityConverter}}"
+               Margin="30 5"/>
+
+        <!--CheckItem-->
+        <TextBox x:Name="TaskCheckBox" 
+                 Grid.Row="2"
+                 Style="{StaticResource TaskTitleBox}"
+                 BorderBrush="{StaticResource Borders}"
+                 Margin="20 10 80 10"/>
+        <Label IsHitTestVisible="False" 
+               Grid.Row="2" 
+               Foreground="{StaticResource PlaceholderText}"
+               Content="Добавьте точку контроля выполнения задачи..."
+               VerticalAlignment="Center"
+               Visibility="{Binding Text.IsEmpty, ElementName=TaskTitle, Converter={StaticResource BooleatToVisibilityConverter}}"
+               Margin="30 10"/>
+        <!--Add New Task button-->
+        <Button Grid.Row="2"
+                Style="{StaticResource RoundAccentButton}"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Height="30"
+                Width="30"
+                Margin="0 0 20 0"
+                Background="Green">
+            <!--New Task Icon-->
+            <Viewbox Width="20" Height="30">
+                <Path Data="{StaticResource AddIcon}" Fill="{StaticResource OnAccent}"/>
+            </Viewbox>
+        </Button>
+
+        <!--Task Check Description Box-->
+        <TextBox x:Name="TaskCheckDesc"
+                 Style="{StaticResource TaskDecrBox}"
+                 Grid.Row="3"
+                 VerticalContentAlignment="Top"
+                 HorizontalContentAlignment="Left"
+                 />
+        <Label IsHitTestVisible="False" 
+               Grid.Row="3" 
+               Foreground="{StaticResource PlaceholderText}"
+               Content="Добавьте описание точки контроля..."
+               VerticalAlignment="Top"
+               Visibility="{Binding Text.IsEmpty, ElementName=TaskDesc, Converter={StaticResource BooleatToVisibilityConverter}}"
+               Margin="30 5"/>
+
+        <!--Enter DateTime-->
+        <StackPanel Grid.Row="4" Orientation="Horizontal"
+                        Margin="20 5"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Left">
+            <TextBlock Text="Выполнить до:"
+                    Margin="0 0 20 0"
+                    VerticalAlignment="Center"/>
+            <DatePicker Margin="0 0 20 0"/>
+        </StackPanel>
+        <Grid Grid.Row="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0"
+                        Orientation="Horizontal"
+                        Margin="20 0">
+                <CheckBox VerticalAlignment="Center"></CheckBox>
+                <Label VerticalAlignment="Center" 
+                       Content="Включить таймер выполнения задачи"
+                       Margin="20 0"></Label>
+            </StackPanel>
+            <StackPanel Grid.Row="1"
+                        Orientation="Horizontal"
+                        Margin="20 0">
+                <CheckBox VerticalAlignment="Center"></CheckBox>
+                <Label VerticalAlignment="Center" 
+                       Content="Добавить задачу в календарь"
+                       Margin="20 0"></Label>
+            </StackPanel>
+            <Button Grid.Row="2"
+                    Content="Отмена"
+                    HorizontalContentAlignment="Center"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource TaskViewEditButton}"
+                    Margin="10 0 0 0"
+                    />
+            <Button Grid.Row="2" 
+                    Content="Добавить задачу"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource TaskViewCompleteButton}"
+                    Margin="0 0 10 0"/>
+        </Grid>
+    </Grid>
+
+</Window>

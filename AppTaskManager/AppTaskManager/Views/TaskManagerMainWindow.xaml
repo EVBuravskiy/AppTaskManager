@@ -3,11 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:AppTaskManager.ViewModels"
         xmlns:local="clr-namespace:AppTaskManager.Views"
         mc:Ignorable="d"
         Title="Менеджер задач" Height="832" Width="1288"
         MinHeight="450" MinWidth="1170"
         WindowStartupLocation="CenterScreen">
+
+    <Window.DataContext>
+        <vm:MainWindowViewModel />
+    </Window.DataContext>
 
     <Window.Resources>
         <Storyboard x:Key="SlideOnLoad">
@@ -83,7 +88,8 @@
                     VerticalAlignment="Center"
                     Height="40"
                     Width="40"
-                    Margin="0 0 20 0">
+                    Margin="0 0 20 0"
+                    Command="{Binding IOpenNewWindow}">
                 <!--New Task Icon-->
                 <Viewbox Width="20" Height="30">
                     <Path Data="{StaticResource NewTaskIcon}" Fill="{StaticResource OnAccent}"/>
