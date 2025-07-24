@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AppTaskManager.Controllers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ using System.Windows.Shapes;
 namespace AppTaskManager.Views
 {
     /// <summary>
-    /// Логика взаимодействия для NewTaskWindow.xaml
+    /// A class associated with a view that contains the logic of the work.
     /// </summary>
     public partial class NewTaskWindow : Window
     {

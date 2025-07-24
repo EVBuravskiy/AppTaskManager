@@ -90,6 +90,9 @@
                     Width="40"
                     Margin="0 0 20 0"
                     Command="{Binding IOpenNewWindow}">
+                <Button.DataContext>
+                    <vm:MainWindowViewModel/>
+                </Button.DataContext>
                 <!--New Task Icon-->
                 <Viewbox Width="20" Height="30">
                     <Path Data="{StaticResource NewTaskIcon}" Fill="{StaticResource OnAccent}"/>
