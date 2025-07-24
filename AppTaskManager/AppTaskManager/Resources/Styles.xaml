@@ -224,7 +224,7 @@
         <Setter Property="BorderBrush" Value="{StaticResource Borders}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Margin" Value="20 10"/>
-        <Setter Property="Padding" Value="10 0"/>
+        <Setter Property="Padding" Value="10 5"/>
         <Setter Property="Cursor" Value="IBeam"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -234,11 +234,18 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="5">
+                        <!--Scrollbar-->
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <!--Mouse Over Trigger-->
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="BorderBrush" Value="{DynamicResource AccentDark}"/>
+                            <Setter Property="BorderThickness" Value="2"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource AccentDark}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -281,8 +288,17 @@
                         <!--Scrollbar-->
                         <ScrollViewer x:Name="PART_ContentHost"
                                       HorizontalAlignment="Left"
-                                      VerticalAlignment="Center"/>
+                                      VerticalAlignment="Top"/>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <!--Mouse Over Trigger-->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderThickness" Value="2"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource AccentDark}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
