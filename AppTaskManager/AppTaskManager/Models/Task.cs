@@ -43,20 +43,27 @@ namespace AppTaskManager.Models
         /// <summary>
         /// Execution Timer
         /// </summary>
-        public TimeSpan Timer {  get; set; }
+        public TimeSpan Timer { get; set; }
+
         /// <summary>
         /// Task Processing
         /// </summary>
         public TaskState TaskState { get; set; }
+
         /// <summary>
         /// Task category
         /// </summary>
         public TaskCategory TaskCategory { get; set; }
+
         /// <summary>
         /// Task importance
         /// </summary>
         public TaskImportance TaskImportance { get; set; }
 
+        /// <summary>
+        /// Collection of TaskCheckList
+        /// </summary>
+        public List<TaskChecklist> TaskChecklist {get; set;} = new List<TaskChecklist>();
     }
 
     /// <summary>

@@ -1,4 +1,5 @@
 ﻿using AppTaskManager.Controllers;
+using AppTaskManager.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,8 @@ namespace AppTaskManager.Views
         public NewTaskWindow()
         {
             InitializeComponent();
+
+            DataContext = new TaskViewModel();
         }
     }
 }
