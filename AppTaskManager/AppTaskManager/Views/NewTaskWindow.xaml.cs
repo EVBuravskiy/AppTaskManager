@@ -1,4 +1,5 @@
 ﻿using AppTaskManager.Controllers;
+using AppTaskManager.Models;
 using AppTaskManager.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,15 @@ namespace AppTaskManager.Views
             InitializeComponent();
 
             DataContext = new TaskViewModel();
+        }
+
+        private void TaskList_Selected(object sender, SelectionChangedEventArgs e)
+        {
+            if (TaskList.SelectedItem is TaskCheck selectedTask)
+            {
+                TaskViewModel viewModel = (TaskViewModel)DataContext;
+                viewModel.SelectedTask = selectedTask;
+            }
         }
     }
 }

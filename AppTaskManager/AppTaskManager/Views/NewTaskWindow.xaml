@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AppTaskManager.Views" xmlns:viewmodels="clr-namespace:AppTaskManager.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:TaskViewModel}"
         mc:Ignorable="d"
-        Title="Создать задачу" Height="800" Width="800"
+        Title="Создать задачу" Height="830" Width="800"
         MinWidth="600" MinHeight="680"
         WindowStartupLocation="CenterScreen">
 
@@ -55,7 +55,8 @@
             <RowDefinition Height="50" />
             <RowDefinition Height="1*" />
             <RowDefinition Height="40" />
-            <RowDefinition Height="100" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="130" />
         </Grid.RowDefinitions>
         <Grid.Triggers>
             <EventTrigger RoutedEvent="FrameworkElement.Loaded">
@@ -63,6 +64,8 @@
             </EventTrigger>
         </Grid.Triggers>
         <Rectangle Fill="{StaticResource TaskListBackground}" Grid.RowSpan="6"/>
+
+        <!--First row-->
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
@@ -83,8 +86,9 @@
             <!--Importance Combo Box-->
             <ComboBox Grid.Column="1"
                       Style="{StaticResource ImportanceComboBox}"/>
-
         </Grid>
+
+        <!--Second row-->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -108,7 +112,8 @@
                Visibility="{Binding Text.IsEmpty, ElementName=TaskDesc, Converter={StaticResource BooleatToVisibilityConverter}}"
                Margin="30,5,30,0" Grid.ColumnSpan="2"/>
         </Grid>
-
+        
+        <!--Third row-->
         <!--CheckItem-->
         <TextBox x:Name="TaskCheckBox" 
                  Grid.Row="2"
@@ -138,46 +143,45 @@
                 <Path Data="{StaticResource AddIcon}" Fill="{StaticResource OnAccent}"/>
             </Viewbox>
         </Button>
+
+        <!--Fourth row-->
         <Grid Grid.Row="3">
             <Grid.Triggers>
                 <EventTrigger RoutedEvent="FrameworkElement.Loaded">
                     <BeginStoryboard Storyboard="{StaticResource SlideFromBottom}"/>
                 </EventTrigger>
             </Grid.Triggers>
-
             <!--List of task check-->
-            <ListView Style="{StaticResource ListCheckBox}"
-                ItemsSource="{Binding TaskCheckList}">
+            <ListView x:Name="TaskList" Style="{StaticResource ListCheckBox}"
+                      ItemsSource="{Binding TaskCheckList}"
+                      SelectionChanged="TaskList_Selected">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid MinWidth="500">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="4*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding Description}" 
+                        <TextBlock Text="{Binding Description}" 
                                        Foreground="{StaticResource DefaultText}"
                                        TextWrapping="Wrap"
                                        MinWidth="450"
                                        MaxWidth="600"
                                        Margin="5 0 20 0"/>
-                            <Button Grid.Column="1"
-                                    Style="{StaticResource TaskViewDeleteButton}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Stretch"
-                                    VerticalContentAlignment="Center"
-                                    Content="Remove"
-                                    Padding="5"
-                                    FontSize="12"
-                                    FontWeight="Bold"/>
-                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListView>
         </Grid>
-        
+
+        <!--Fifth row-->
+        <Grid Grid.Row="4">
+            <Button Content="Remove check"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource TaskViewDeleteButton}"
+                    Margin="0 0 10 0"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding IRemoveTaskCheck}"/>
+        </Grid>
+
+        <!--Sixth row-->
         <!--Enter DateTime-->
-        <StackPanel Grid.Row="4" Orientation="Horizontal"
+        <StackPanel Grid.Row="5" Orientation="Horizontal"
                         Margin="20 5"
                         VerticalAlignment="Top"
                         HorizontalAlignment="Left">
@@ -193,7 +197,9 @@
                         Width="150"
                         SelectedDate="{Binding DateTime, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
-        <Grid Grid.Row="5">
+
+        <!--Seventh row-->
+        <Grid Grid.Row="6">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
@@ -221,14 +227,14 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Style="{StaticResource TaskViewEditButton}"
-                    Margin="10 0 0 0"
+                    Margin="10 0 0 10"
                     Command="{Binding IClearTask}"/>
             <Button Grid.Row="2" 
                     Content="Создать задачу"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Style="{StaticResource TaskViewCompleteButton}"
-                    Margin="0 0 10 0"
+                    Margin="0 0 10 10"
                     Command="{Binding IAddNewTask}"/>
         </Grid>
     </Grid>

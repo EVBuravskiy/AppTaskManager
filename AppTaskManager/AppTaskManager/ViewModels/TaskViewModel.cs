@@ -95,6 +95,11 @@ namespace AppTaskManager.ViewModels
         public string? ControlCheckDescription { get; set; }
 
         /// <summary>
+        /// Public property holding selected TaskCheck
+        /// </summary>
+        public TaskCheck SelectedTask { get; set; }
+
+        /// <summary>
         /// Constructor for the TaskViewModel class. It initializes the the TaskDataService and loads tasks
         /// </summary>
         public TaskViewModel()
@@ -173,6 +178,19 @@ namespace AppTaskManager.ViewModels
             TaskCheckList.Add(taskCheck);
             ControlCheckDescription = "";
             OnPropertyChanged(ControlCheckDescription);
+        }
+
+        /// <summary>
+        /// Remove task check command
+        /// </summary>
+        public ICommand IRemoveTaskCheck => new RelayCommand(RemoveTaskCheck);
+
+        /// <summary>
+        /// Remove task check: This method remove selected task check from collection of task check
+        /// </summary>
+        public void RemoveTaskCheck()
+        {
+            TaskCheckList.Remove(SelectedTask);
         }
 
         /// <summary>
