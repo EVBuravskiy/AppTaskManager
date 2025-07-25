@@ -63,7 +63,7 @@ namespace AppTaskManager.Models
         /// <summary>
         /// Collection of TaskCheckList
         /// </summary>
-        public List<TaskChecklist> TaskChecklist {get; set;} = new List<TaskChecklist>();
+        public List<TaskCheck> TaskChecklist {get; set;} = new List<TaskCheck>();
     }
 
     /// <summary>

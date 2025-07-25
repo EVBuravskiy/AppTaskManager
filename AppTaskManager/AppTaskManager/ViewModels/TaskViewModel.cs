@@ -17,7 +17,7 @@ namespace AppTaskManager.ViewModels
     public class TaskViewModel : INotifyPropertyChanged
     {
         /// <summary>
-        /// TaskController Declaration. It used to interact with the underlying data storage
+        /// TaskDataService Declaration. It used to interact with the underlying data storage
         /// </summary>
         private readonly TaskController _taskController;
 
@@ -29,12 +29,12 @@ namespace AppTaskManager.ViewModels
         /// <summary>
         /// Task Title
         /// </summary>
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
         /// Description of the task
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Date and time of task create
@@ -44,7 +44,7 @@ namespace AppTaskManager.ViewModels
         /// <summary>
         /// Date and time of task begining
         /// </summary>
-        public DateTime? StartDateTime { get; set; }
+        public DateTime StartDateTime { get; set; }
 
         /// <summary>
         /// Indicator whether the task has been completed
@@ -54,7 +54,7 @@ namespace AppTaskManager.ViewModels
         /// <summary>
         /// Execution Timer
         /// </summary>
-        public TimeSpan Timer { get; set; }
+        public TimeSpan? Timer { get; set; }
 
         /// <summary>
         /// Task Processing
@@ -74,7 +74,25 @@ namespace AppTaskManager.ViewModels
         /// <summary>
         /// ObservableCollection for check list
         /// </summary>
-        public ObservableCollection<TaskChecklist> TaskChecklist { get; set; }
+        private ObservableCollection<Models.TaskCheck> _taskChecklist;
+
+        /// <summary>
+        /// Public property for tasks
+        /// </summary>
+        public ObservableCollection<Models.TaskCheck> TaskCheckList
+        {
+            get { return _taskChecklist; }
+            set
+            {
+                _taskChecklist = value;
+                OnPropertyChanged(nameof(TaskCheckList));
+            }
+        }
+
+        /// <summary>
+        /// Control check description
+        /// </summary>
+        public string? ControlCheckDescription { get; set; }
 
         /// <summary>
         /// Constructor for the TaskViewModel class. It initializes the the TaskDataService and loads tasks
@@ -82,7 +100,14 @@ namespace AppTaskManager.ViewModels
         public TaskViewModel()
         {
             _taskController = new TaskController();
-            TaskChecklist = new ObservableCollection<TaskChecklist>();
+            if (TaskCheckList != null)
+            {
+                TaskCheckList.Clear();
+            }
+            else
+            {
+                TaskCheckList = new ObservableCollection<TaskCheck>();
+            }
             DateTime = DateTime.Now;
         }
 
@@ -103,12 +128,12 @@ namespace AppTaskManager.ViewModels
         /// <summary>
         /// Private field holding the collection of task models
         /// </summary>
-        private ObservableCollection<Models.Task> _tasks;
+        private ObservableCollection<Models.Task>? _tasks;
 
         /// <summary>
         /// Public property for tasks
         /// </summary>
-        public ObservableCollection<Models.Task> Tasks
+        public ObservableCollection<Models.Task>? Tasks
         {
             get { return _tasks; }
             set
@@ -126,6 +151,28 @@ namespace AppTaskManager.ViewModels
         {
             var TaskList = _taskController.LoadTasks();
             Tasks = new ObservableCollection<Models.Task>(TaskList);
+        }
+
+        /// <summary>
+        /// Add control check command
+        /// </summary>
+        public ICommand IAddControlCheck => new RelayCommand(AddControlCheck);
+
+        /// <summary>
+        /// Add control check
+        /// </summary>
+        public void AddControlCheck()
+        {
+            //if(TaskCheckList == null)
+            //{
+            //    TaskCheckList = new ObservableCollection<TaskCheck>();
+            //}
+            TaskCheck taskCheck = new TaskCheck();
+            taskCheck.Description = this.ControlCheckDescription;
+            taskCheck.IsComplete = false;
+            TaskCheckList.Add(taskCheck);
+            ControlCheckDescription = "";
+            OnPropertyChanged(ControlCheckDescription);
         }
 
         /// <summary>
@@ -147,7 +194,7 @@ namespace AppTaskManager.ViewModels
                 IsComplete = false,
                 StartDateTime = DateTime.Now,
                 TaskCategory = TaskCategory.Education,
-                TaskChecklist = this.TaskChecklist.ToList(),
+                TaskChecklist = this.TaskCheckList.ToList(),
                 TaskImportance = TaskImportance.Critical,
                 TaskState = TaskState.Late,
                 Timer = new TimeSpan(0),
@@ -180,11 +227,11 @@ namespace AppTaskManager.ViewModels
             Title = "";
             Description = "";
             DateTime = DateTime.Now;
-            TaskChecklist.Clear();
+            TaskCheckList.Clear();
             OnPropertyChanged(Title);
             OnPropertyChanged(Description);
             OnPropertyChanged(nameof(DateTime));
-            OnPropertyChanged(nameof(TaskChecklist));
+            OnPropertyChanged(nameof(TaskCheckList));
         }
 
         /// <summary>

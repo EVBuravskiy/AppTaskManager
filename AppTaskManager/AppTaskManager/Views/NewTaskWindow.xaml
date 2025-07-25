@@ -114,13 +114,14 @@
                  Grid.Row="2"
                  Style="{StaticResource TaskTitleBox}"
                  BorderBrush="{StaticResource Borders}"
-                 Margin="20 10 80 10"/>
+                 Margin="20 10 80 10"
+                 Text="{Binding ControlCheckDescription, UpdateSourceTrigger=PropertyChanged}"/>
         <Label IsHitTestVisible="False" 
                Grid.Row="2" 
                Foreground="{StaticResource PlaceholderText}"
                Content="Введите название точки контроля выполнения задачи..."
                VerticalAlignment="Center"
-               Visibility="{Binding Text.IsEmpty, ElementName=TaskTitle, Converter={StaticResource BooleatToVisibilityConverter}}"
+               Visibility="{Binding Text.IsEmpty, ElementName=TaskCheckBox, Converter={StaticResource BooleatToVisibilityConverter}}"
                Margin="30 10"/>
         <!--Add New Task button-->
         <Button Grid.Row="2"
@@ -130,7 +131,8 @@
                 Height="30"
                 Width="30"
                 Margin="0 0 20 0"
-                Background="Green">
+                Background="Green"
+                Command="{Binding IAddControlCheck}">
             <!--New Task Icon-->
             <Viewbox Width="20" Height="30">
                 <Path Data="{StaticResource AddIcon}" Fill="{StaticResource OnAccent}"/>
@@ -142,18 +144,38 @@
                     <BeginStoryboard Storyboard="{StaticResource SlideFromBottom}"/>
                 </EventTrigger>
             </Grid.Triggers>
-            <!--Task Check Description Box-->
-            <TextBox x:Name="TaskCheckDesc"
-                 Style="{StaticResource TaskDecrBox}"
-                 VerticalContentAlignment="Top"
-                 HorizontalContentAlignment="Left"/>
-            <Label IsHitTestVisible="False" 
-               Foreground="{StaticResource PlaceholderText}"
-               Content="Введите описание точки контроля..."
-               VerticalAlignment="Top"
-               Visibility="{Binding Text.IsEmpty, ElementName=TaskDesc, Converter={StaticResource BooleatToVisibilityConverter}}"
-               Margin="30 5"/>
+
+            <!--List of task check-->
+            <ListView Style="{StaticResource ListCheckBox}"
+                ItemsSource="{Binding TaskCheckList}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid MinWidth="500">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Description}" 
+                                       Foreground="{StaticResource DefaultText}"
+                                       TextWrapping="Wrap"
+                                       MinWidth="450"
+                                       MaxWidth="600"
+                                       Margin="5 0 20 0"/>
+                            <Button Grid.Column="1"
+                                    Style="{StaticResource TaskViewDeleteButton}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Stretch"
+                                    VerticalContentAlignment="Center"
+                                    Content="Remove"
+                                    Padding="5"
+                                    FontSize="12"
+                                    FontWeight="Bold"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListView>
         </Grid>
+        
         <!--Enter DateTime-->
         <StackPanel Grid.Row="4" Orientation="Horizontal"
                         Margin="20 5"
