@@ -256,13 +256,28 @@
         </Setter>
     </Style>
 
-    <!--Importance Combo Box-->
-    <Style x:Key="ImportanceComboBox" TargetType="ComboBox">
-        <Setter Property="Background" Value="Gray"/>
+    <!--Task Combo Box-->
+    <Style x:Key="TaskComboBox" TargetType="ComboBox">
+        <Setter Property="Background" Value="WhiteSmoke"/>
         <Setter Property="Height" Value="30"/>
-        <Setter Property="Margin" Value="20 10"/>
+        <Setter Property="Margin" Value="10 10"/>
         <Setter Property="BorderBrush" Value="{StaticResource Borders}"/>
         <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="5">
+                        <ScrollViewer>
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!--TaskDesriptionBox-->

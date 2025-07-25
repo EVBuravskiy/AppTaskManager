@@ -67,9 +67,19 @@ namespace AppTaskManager.ViewModels
         public TaskCategory TaskCategory { get; set; }
 
         /// <summary>
+        /// Array task categories for combobox
+        /// </summary>
+        public Array TaskCategories => Enum.GetValues(typeof(TaskCategory));
+
+        /// <summary>
         /// Task importance
         /// </summary>
         public TaskImportance TaskImportance { get; set; }
+
+        /// <summary>
+        /// Array of value of task importance for combobox
+        /// </summary>
+        public Array TaskImportancies => Enum.GetValues(typeof(TaskImportance));
 
         /// <summary>
         /// ObservableCollection for check list

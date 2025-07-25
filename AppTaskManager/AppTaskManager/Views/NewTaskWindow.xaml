@@ -70,6 +70,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="260"/>
             </Grid.ColumnDefinitions>
             <!--Title-->
             <TextBox x:Name="TaskTitle" Grid.Column="0"
@@ -84,8 +85,13 @@
                Visibility="{Binding Text.IsEmpty, ElementName=TaskTitle, Converter={StaticResource BooleatToVisibilityConverter}}"
                Margin="30 10"/>
             <!--Importance Combo Box-->
-            <ComboBox Grid.Column="1"
-                      Style="{StaticResource ImportanceComboBox}"/>
+            <ComboBox x:Name="Importance" Grid.Column="1"
+                  Style="{StaticResource TaskComboBox}" 
+                  ItemsSource="{Binding TaskImportancies}"/>
+            <!--Category Combo Box-->
+            <ComboBox x:Name="Category" Grid.Column="2"
+                  Style="{StaticResource TaskComboBox}"
+                  ItemsSource="{Binding TaskCategories}"/>
         </Grid>
 
         <!--Second row-->
