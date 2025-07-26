@@ -85,13 +85,19 @@
                Visibility="{Binding Text.IsEmpty, ElementName=TaskTitle, Converter={StaticResource BooleatToVisibilityConverter}}"
                Margin="30 10"/>
             <!--Importance Combo Box-->
-            <ComboBox x:Name="Importance" Grid.Column="1"
-                  Style="{StaticResource TaskComboBox}" 
-                  ItemsSource="{Binding TaskImportancies}"/>
-            <!--Category Combo Box-->
-            <ComboBox x:Name="Category" Grid.Column="2"
+            <ComboBox x:Name="ComboBoxImportance"
                   Style="{StaticResource TaskComboBox}"
-                  ItemsSource="{Binding TaskCategories}"/>
+                  Grid.Column="1"
+                  ItemsSource="{Binding TaskImportancies}"
+                  SelectedIndex="0"
+                  SelectionChanged="Importance_Selected"/>
+            <!--Category Combo Box-->
+            <ComboBox x:Name="ComboBoxCategory"
+                  Style="{StaticResource TaskComboBox}"
+                  Grid.Column="2"
+                  ItemsSource="{Binding TaskCategories}"
+                  SelectedIndex="0"
+                  SelectionChanged="Category_Selected"/>
         </Grid>
 
         <!--Second row-->

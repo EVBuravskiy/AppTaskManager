@@ -72,6 +72,10 @@ namespace AppTaskManager.Models
     public enum TaskState
     {
         /// <summary>
+        /// The task hasn't been started yet
+        /// </summary>
+        NotStarted,
+        /// <summary>
         /// The task is still in progress
         /// </summary>
         InProgress,
@@ -79,10 +83,6 @@ namespace AppTaskManager.Models
         /// The task has been marked as completed
         /// </summary>
         Complete,
-        /// <summary>
-        /// The task hasn't been started yet
-        /// </summary>
-        NotStarted,
         /// <summary>
         /// The task is late
         /// </summary>

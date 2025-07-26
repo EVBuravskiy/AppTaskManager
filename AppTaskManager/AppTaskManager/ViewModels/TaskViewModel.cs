@@ -178,10 +178,6 @@ namespace AppTaskManager.ViewModels
         /// </summary>
         public void AddControlCheck()
         {
-            //if(TaskCheckList == null)
-            //{
-            //    TaskCheckList = new ObservableCollection<TaskCheck>();
-            //}
             TaskCheck taskCheck = new TaskCheck();
             taskCheck.Description = this.ControlCheckDescription;
             taskCheck.IsComplete = false;
@@ -221,9 +217,9 @@ namespace AppTaskManager.ViewModels
                 DateTime = this.DateTime,
                 IsComplete = false,
                 StartDateTime = DateTime.Now,
-                TaskCategory = TaskCategory.Education,
+                TaskCategory = this.TaskCategory,
                 TaskChecklist = this.TaskCheckList.ToList(),
-                TaskImportance = TaskImportance.Critical,
+                TaskImportance = this.TaskImportance,
                 TaskState = TaskState.Late,
                 Timer = new TimeSpan(0),
             };

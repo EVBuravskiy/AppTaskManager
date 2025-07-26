@@ -258,26 +258,18 @@
 
     <!--Task Combo Box-->
     <Style x:Key="TaskComboBox" TargetType="ComboBox">
-        <Setter Property="Background" Value="WhiteSmoke"/>
+        <Setter Property="Background" Value="LightGray"/>
         <Setter Property="Height" Value="30"/>
-        <Setter Property="Margin" Value="10 10"/>
+        <Setter Property="Margin" Value="20 10"/>
         <Setter Property="BorderBrush" Value="{StaticResource Borders}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="FontSize" Value="18"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ComboBox">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="5">
-                        <ScrollViewer>
-                            <ItemsPresenter/>
-                        </ScrollViewer>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
+                Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
+                Value="Auto" />
+        <Setter Property="ScrollViewer.CanContentScroll"
+                Value="true" />
     </Style>
 
     <!--TaskDesriptionBox-->

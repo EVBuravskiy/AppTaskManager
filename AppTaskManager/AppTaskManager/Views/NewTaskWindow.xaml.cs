@@ -37,5 +37,23 @@ namespace AppTaskManager.Views
                 viewModel.SelectedTask = selectedTask;
             }
         }
+
+        private void Importance_Selected(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboBoxImportance.SelectedItem is TaskImportance importance)
+            {
+                TaskViewModel viewModel = (TaskViewModel)DataContext;
+                viewModel.TaskImportance = importance;
+            }
+        }
+
+        private void Category_Selected(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboBoxCategory.SelectedItem is TaskCategory category)
+            {
+                TaskViewModel viewModel = (TaskViewModel)DataContext;
+                viewModel.TaskCategory = category;
+            }
+        }
     }
 }
