@@ -76,28 +76,30 @@
             <TextBox x:Name="TaskTitle" Grid.Column="0"
                      Style="{StaticResource TaskTitleBox}"
                      BorderBrush="{StaticResource Borders}"
-                     Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"/>
+                     FontSize="14"
+                     Text="{Binding TaskModel.Title, UpdateSourceTrigger=PropertyChanged}"/>
             <Label IsHitTestVisible="False" 
-               Grid.Column="0"
-               Foreground="{StaticResource PlaceholderText}"
-               Content="Введите наименование задачи..."
-               VerticalAlignment="Center"
-               Visibility="{Binding Text.IsEmpty, ElementName=TaskTitle, Converter={StaticResource BooleatToVisibilityConverter}}"
-               Margin="30 10"/>
+                   Grid.Column="0"
+                   Foreground="{StaticResource PlaceholderText}"
+                   Content="Введите наименование задачи..."
+                   VerticalAlignment="Center"
+                   FontSize="14"
+                   Visibility="{Binding Text.IsEmpty, ElementName=TaskTitle, Converter={StaticResource BooleatToVisibilityConverter}}"
+                   Margin="30 10"/>
             <!--Importance Combo Box-->
             <ComboBox x:Name="ComboBoxImportance"
-                  Style="{StaticResource TaskComboBox}"
-                  Grid.Column="1"
-                  ItemsSource="{Binding TaskImportancies}"
-                  SelectedIndex="0"
-                  SelectionChanged="Importance_Selected"/>
+                      Style="{StaticResource TaskComboBox}"
+                      Grid.Column="1"
+                      ItemsSource="{Binding TaskImportancies}"
+                      SelectedIndex="0"
+                      SelectionChanged="Importance_Selected"/>
             <!--Category Combo Box-->
             <ComboBox x:Name="ComboBoxCategory"
-                  Style="{StaticResource TaskComboBox}"
-                  Grid.Column="2"
-                  ItemsSource="{Binding TaskCategories}"
-                  SelectedIndex="0"
-                  SelectionChanged="Category_Selected"/>
+                      Style="{StaticResource TaskComboBox}"
+                      Grid.Column="2"
+                      ItemsSource="{Binding TaskCategories}"
+                      SelectedIndex="0"
+                      SelectionChanged="Category_Selected"/>
         </Grid>
 
         <!--Second row-->
@@ -116,7 +118,7 @@
                  Style="{StaticResource TaskDecrBox}"
                  VerticalContentAlignment="Top"
                  HorizontalContentAlignment="Left" Grid.ColumnSpan="2"
-                 Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
+                 Text="{Binding TaskModel.Description, UpdateSourceTrigger=PropertyChanged}"/>
             <Label IsHitTestVisible="False" 
                Foreground="{StaticResource PlaceholderText}"
                Content="Введите описание задачи..."
@@ -132,11 +134,13 @@
                  Style="{StaticResource TaskTitleBox}"
                  BorderBrush="{StaticResource Borders}"
                  Margin="20 10 80 10"
+                 FontSize="14"
                  Text="{Binding ControlCheckDescription, UpdateSourceTrigger=PropertyChanged}"/>
         <Label IsHitTestVisible="False" 
                Grid.Row="2" 
                Foreground="{StaticResource PlaceholderText}"
                Content="Введите название точки контроля выполнения задачи..."
+               FontSize="14"
                VerticalAlignment="Center"
                Visibility="{Binding Text.IsEmpty, ElementName=TaskCheckBox, Converter={StaticResource BooleatToVisibilityConverter}}"
                Margin="30 10"/>
@@ -207,7 +211,7 @@
                     VerticalAlignment="Center"/>
             <DatePicker Margin="0 0 20 0" 
                         Width="150"
-                        SelectedDate="{Binding DateTime, UpdateSourceTrigger=PropertyChanged}"/>
+                        SelectedDate="{Binding TaskModel.EndDateTime, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
 
         <!--Seventh row-->

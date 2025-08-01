@@ -1,20 +1,12 @@
 ﻿using AppTaskManager.Controllers;
 using AppTaskManager.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace AppTaskManager.ViewModels
 {
-    /// <summary>
-    /// Model view for Task
-    /// </summary>
-    public class TaskViewModel : INotifyPropertyChanged
+    public class TaskViewModel : BasePropertyChanged
     {
         /// <summary>
         /// TaskDataService Declaration. It used to interact with the underlying data storage
@@ -22,72 +14,50 @@ namespace AppTaskManager.ViewModels
         private readonly TaskController _taskController;
 
         /// <summary>
-        /// Task ID
+        /// Private field holding the instance of the TaskModel class
         /// </summary>
-        public int Id { get; set; }
+        private Models.TaskModel _taskModel;
 
         /// <summary>
-        /// Task Title
+        /// Public property for the instance of the TaskModel class
         /// </summary>
-        public string? Title { get; set; }
+        public Models.TaskModel TaskModel
+        {
+            get { return _taskModel; }
+            set { OnPropertyChanged(nameof(TaskModel)); }
+        }
 
         /// <summary>
-        /// Description of the task
+        /// Private field holding the selected instance of the TaskModel class
         /// </summary>
-        public string? Description { get; set; }
+        private Models.TaskModel _selectedTask;
+        
+        /// <summary>
+        /// Pulbic property for the selected instance of the TaskModel class
+        /// </summary>
+        public Models.TaskModel SelectedTask
+        {
+            get { return _selectedTask; }
+            set { OnPropertyChanged(nameof(SelectedTask)); }
+        }
 
         /// <summary>
-        /// Date and time of task create
-        /// </summary>
-        public DateTime DateTime { get; set; }
-
-        /// <summary>
-        /// Date and time of task begining
-        /// </summary>
-        public DateTime StartDateTime { get; set; }
-
-        /// <summary>
-        /// Indicator whether the task has been completed
-        /// </summary>
-        public bool IsComplete { get; set; }
-
-        /// <summary>
-        /// Execution Timer
-        /// </summary>
-        public TimeSpan? Timer { get; set; }
-
-        /// <summary>
-        /// Task Processing
-        /// </summary>
-        public TaskState TaskState { get; set; }
-
-        /// <summary>
-        /// Task category
-        /// </summary>
-        public TaskCategory TaskCategory { get; set; }
-
-        /// <summary>
-        /// Array task categories for combobox
+        /// Array of task categories for combobox
         /// </summary>
         public Array TaskCategories => Enum.GetValues(typeof(TaskCategory));
-
+        
         /// <summary>
-        /// Task importance
-        /// </summary>
-        public TaskImportance TaskImportance { get; set; }
-
-        /// <summary>
-        /// Array of value of task importance for combobox
+        /// Array of task categories for combobox
         /// </summary>
         public Array TaskImportancies => Enum.GetValues(typeof(TaskImportance));
 
         /// <summary>
-        /// ObservableCollection for check list
+        /// Private field holding the observable collection of check list
         /// </summary>
         private ObservableCollection<Models.TaskCheck> _taskChecklist;
 
         /// <summary>
-        /// Public property for tasks
+        /// Public property for observable collection of check list
         /// </summary>
         public ObservableCollection<Models.TaskCheck> TaskCheckList
         {
@@ -100,20 +70,42 @@ namespace AppTaskManager.ViewModels
         }
 
         /// <summary>
-        /// Control check description
+        /// Public property for control check description
         /// </summary>
-        public string? ControlCheckDescription { get; set; }
+        public string ControlCheckDescription{ get; set; }
 
         /// <summary>
         /// Public property holding selected TaskCheck
         /// </summary>
-        public TaskCheck SelectedTask { get; set; }
+        public TaskCheck CheckedTask { get; set; }
+
+        /// <summary>
+        /// Private field holding the collection of task models
+        /// </summary>
+        private ObservableCollection<Models.TaskModel> _TaskModels;
+
+        /// <summary>
+        /// Public property for tasks
+        /// </summary>
+        public ObservableCollection<Models.TaskModel> TaskModels
+        {
+            get { return _TaskModels; }
+            set
+            {
+                _TaskModels = value;
+                OnPropertyChanged(nameof(TaskModels));
+            }
+        }
 
         /// <summary>
         /// Constructor for the TaskViewModel class. It initializes the the TaskDataService and loads tasks
         /// </summary>
         public TaskViewModel()
         {
+            _taskModel = new Models.TaskModel();
+            _TaskModels = new ObservableCollection<Models.TaskModel>();
+            _taskModel.CreateDateTime = DateTime.Now;
+            _taskModel.EndDateTime = DateTime.Now;
             _taskController = new TaskController();
             if (TaskCheckList != null)
             {
@@ -123,41 +115,9 @@ namespace AppTaskManager.ViewModels
             {
                 TaskCheckList = new ObservableCollection<TaskCheck>();
             }
-            DateTime = DateTime.Now;
+            LoadTasks();
         }
-
-        /// <summary>
-        /// Event declaration for PropertyChanged
-        /// </summary>
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        /// <summary>
-        /// Invoke event PropertyChanged
-        /// </summary>
-        /// <param name="propertyName"></param>
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Private field holding the collection of task models
-        /// </summary>
-        private ObservableCollection<Models.Task>? _tasks;
-
-        /// <summary>
-        /// Public property for tasks
-        /// </summary>
-        public ObservableCollection<Models.Task>? Tasks
-        {
-            get { return _tasks; }
-            set
-            {
-                _tasks = value;
-                OnPropertyChanged(nameof(Tasks));
-            }
-        }
-
+        
         /// <summary>
         /// Load Tasks: This method loads the list of tasks from the TaskDataService and updates the Tasks collection.
         /// The Tasks collection is bound to the view, so updating this collection will update the UI accordingly.
@@ -165,7 +125,7 @@ namespace AppTaskManager.ViewModels
         private void LoadTasks()
         {
             var TaskList = _taskController.LoadTasks();
-            Tasks = new ObservableCollection<Models.Task>(TaskList);
+            TaskModels = new ObservableCollection<Models.TaskModel>(TaskList);
         }
 
         /// <summary>
@@ -182,6 +142,7 @@ namespace AppTaskManager.ViewModels
             taskCheck.Description = this.ControlCheckDescription;
             taskCheck.IsComplete = false;
             TaskCheckList.Add(taskCheck);
+            TaskModel.TaskChecklist = TaskCheckList.ToList();
             ControlCheckDescription = "";
             OnPropertyChanged(ControlCheckDescription);
         }
@@ -196,7 +157,8 @@ namespace AppTaskManager.ViewModels
         /// </summary>
         public void RemoveTaskCheck()
         {
-            TaskCheckList.Remove(SelectedTask);
+            TaskCheckList.Remove(CheckedTask);
+            TaskModel.TaskChecklist = TaskCheckList.ToList();
         }
 
         /// <summary>
@@ -209,29 +171,28 @@ namespace AppTaskManager.ViewModels
         /// </summary>
         public void AddNewTask()
         {
-            Models.Task newTask = new Models.Task
+            Models.TaskModel newTask = new Models.TaskModel
             {
                 Id = _taskController.GenerateNewTaskId(),
-                Title = this.Title,
-                Description = this.Description,
-                DateTime = this.DateTime,
+                Title = TaskModel.Title,
+                Description = TaskModel.Description,
+                CreateDateTime = DateTime.Now,
+                StartDateTime = null,
+                EndDateTime = TaskModel.EndDateTime,
                 IsComplete = false,
-                StartDateTime = DateTime.Now,
-                TaskCategory = this.TaskCategory,
-                TaskChecklist = this.TaskCheckList.ToList(),
-                TaskImportance = this.TaskImportance,
-                TaskState = TaskState.Late,
                 Timer = new TimeSpan(0),
+                TaskState = TaskState.NotStarted,
+                TaskCategory = TaskModel.TaskCategory,
+                TaskImportance = TaskModel.TaskImportance,
+                TaskChecklist = TaskModel.TaskChecklist,
             };
             _taskController.AddTask(newTask);
-            //Reload tasks to reflect the new addition
             LoadTasks();
-            //Remove all data from fields
             ClearFields();
         }
 
         /// <summary>
-        /// Clear task command
+        /// Clear fields command
         /// </summary>
         public ICommand IClearTask => new RelayCommand(ClearTask);
 
@@ -248,20 +209,21 @@ namespace AppTaskManager.ViewModels
         /// </summary>
         private void ClearFields()
         {
-            Title = "";
-            Description = "";
-            DateTime = DateTime.Now;
+            TaskModel.Title = "";
+            TaskModel.Description = "";
+            TaskModel.CreateDateTime = DateTime.Now;
+            TaskModel.TaskCategory = TaskCategory.Work;
+            TaskModel.TaskImportance = TaskImportance.Low;
             TaskCheckList.Clear();
-            OnPropertyChanged(Title);
-            OnPropertyChanged(Description);
-            OnPropertyChanged(nameof(DateTime));
+            TaskModel.TaskChecklist = TaskCheckList.ToList();
+            OnPropertyChanged(nameof(TaskModel));
             OnPropertyChanged(nameof(TaskCheckList));
         }
 
         /// <summary>
         /// Update task: This method update task into the list of tasks from the TaskDataService and updates the Tasks collection.
         /// </summary>
-        public void UpdateTask(Models.Task updateTask)
+        public void UpdateTask(Models.TaskModel updateTask)
         {
             _taskController.UpdateTask(updateTask);
             LoadTasks();
@@ -270,7 +232,7 @@ namespace AppTaskManager.ViewModels
         /// <summary>
         /// Delete task: This method remove task from the list of tasks from the TaskDataService and updates the Tasks collection.
         /// </summary>
-        public void DeleteTask(Models.Task task)
+        public void DeleteTask(Models.TaskModel task)
         {
             _taskController.DeleteTask(task);
             LoadTasks();

@@ -31,10 +31,10 @@ namespace AppTaskManager.Views
 
         private void TaskList_Selected(object sender, SelectionChangedEventArgs e)
         {
-            if (TaskList.SelectedItem is TaskCheck selectedTask)
+            if (TaskList.SelectedItem is TaskCheck selectedCheck)
             {
                 TaskViewModel viewModel = (TaskViewModel)DataContext;
-                viewModel.SelectedTask = selectedTask;
+                viewModel.CheckedTask = selectedCheck;
             }
         }
 
@@ -43,7 +43,7 @@ namespace AppTaskManager.Views
             if (ComboBoxImportance.SelectedItem is TaskImportance importance)
             {
                 TaskViewModel viewModel = (TaskViewModel)DataContext;
-                viewModel.TaskImportance = importance;
+                viewModel.TaskModel.TaskImportance = importance;
             }
         }
 
@@ -52,7 +52,7 @@ namespace AppTaskManager.Views
             if (ComboBoxCategory.SelectedItem is TaskCategory category)
             {
                 TaskViewModel viewModel = (TaskViewModel)DataContext;
-                viewModel.TaskCategory = category;
+                viewModel.TaskModel.TaskCategory = category;
             }
         }
     }

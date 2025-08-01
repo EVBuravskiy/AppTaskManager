@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:AppTaskManager.ViewModels"
         xmlns:local="clr-namespace:AppTaskManager.Views"
+        xmlns:v="clr-namespace:AppTaskManager.Views"
         mc:Ignorable="d"
-        Title="Менеджер задач" Height="832" Width="1288"
+        Title="Менеджер задач" Height="800" Width="1400"
         MinHeight="450" MinWidth="1170"
         WindowStartupLocation="CenterScreen">
 
@@ -43,7 +44,7 @@
             <ColumnDefinition Width="80" />
             <ColumnDefinition Width="435" />
             <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="140" />
+            <ColumnDefinition Width="250" />
         </Grid.ColumnDefinitions>
         
         <!--Navigation panel-->
@@ -52,16 +53,6 @@
             <Button Style="{StaticResource NavigationButton}">
                 <Viewbox Width="30" Height="30">
                     <Path Data="{StaticResource ListIcon}" Fill="{StaticResource OnAccent}"/>
-                </Viewbox>
-            </Button>
-            <Button Style="{StaticResource NavigationButton}">
-                <Viewbox Width="30" Height="30">
-                    <Path Data="{StaticResource CheckIcon}" Fill="{StaticResource OnAccent}"/>
-                </Viewbox>
-            </Button>
-            <Button Style="{StaticResource NavigationButton}">
-                <Viewbox Width="35" Height="35" >
-                    <Path Data="{StaticResource TimerIcon}" Fill="{StaticResource OnAccent}"/>
                 </Viewbox>
             </Button>
         </StackPanel>
@@ -128,7 +119,13 @@
             <ListView Grid.Row="2"
                       Background="Transparent"
                       Margin="0 20"
-                      BorderBrush="Transparent">
+                      BorderBrush="Transparent"
+                      ItemsSource="{Binding TaskViewModel.TaskModels}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <v:TaskListItem Height="145" Width="420" Background="WhiteSmoke"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
             </ListView>
         </Grid>
         <!--Task Viewer-->
@@ -233,6 +230,10 @@
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="140"/>
             </Grid.RowDefinitions>
+            <Calendar Grid.Row="0" HorizontalAlignment="Center" Margin="20" VerticalAlignment="Top" Width="174"/>
+            <ListView Grid.Row="1">
+                <!--Выборка ближайших к исполнению задач-->
+            </ListView>
         </Grid>
 
     </Grid>

@@ -73,7 +73,7 @@ namespace AppTaskManager.Controllers
             //Check if the file exists
             if (!File.Exists(_filePath))
             {
-                File.WriteAllText(_filePath, JsonConvert.SerializeObject(new List<Models.Task>()));
+                File.WriteAllText(_filePath, JsonConvert.SerializeObject(new List<Models.TaskModel>()));
             }
         }
 
@@ -81,18 +81,18 @@ namespace AppTaskManager.Controllers
         /// Load Tasks: This method load and deserialise tasks from json file
         /// </summary>
         /// <returns></returns>
-        public List<Models.Task> LoadTasks()
+        public List<Models.TaskModel> LoadTasks()
         {
             //Read and deserialise the JSON file
             string fileContent = File.ReadAllText(_filePath);
-            return JsonConvert.DeserializeObject<List<Models.Task>>(fileContent);
+            return JsonConvert.DeserializeObject<List<Models.TaskModel>>(fileContent);
         }
 
         /// <summary>
         /// Save Tasks: This method serialize and save list of tasks to JSON file
         /// </summary>
         /// <param name="tasks"></param>
-        public void SaveTasks(List<Models.Task> tasks)
+        public void SaveTasks(List<Models.TaskModel> tasks)
         {
             //Serialize end write the list of tasks to the json file
             string json = JsonConvert.SerializeObject(tasks, Newtonsoft.Json.Formatting.Indented);
@@ -118,12 +118,12 @@ namespace AppTaskManager.Controllers
         /// Add task: This method add new task into JSON file
         /// </summary>
         /// <param name="newTask"></param>
-        public void AddTask(Models.Task newTask)
+        public void AddTask(Models.TaskModel newTask)
         {
             //Generate new Id for new Task
             newTask.Id = GenerateNewTaskId();
             //Loading all tasks from JSON file into List<Task>
-            List<Models.Task> tasks = LoadTasks();
+            List<Models.TaskModel> tasks = LoadTasks();
             //Adding new task to List<Task>
             tasks.Add(newTask);
             //Saving List<Task> in JSON file
@@ -134,10 +134,10 @@ namespace AppTaskManager.Controllers
         /// Update task: This method update task into json-file
         /// </summary>
         /// <param name="updatableTask"></param>
-        public void UpdateTask(Models.Task updatableTask)
+        public void UpdateTask(Models.TaskModel updatableTask)
         {
             //Loading all tasks from JSON file to List<Task>
-            List<Models.Task> tasks = LoadTasks();
+            List<Models.TaskModel> tasks = LoadTasks();
             //Getting task index in List<Task> by updated task id
             int taskIndex = tasks.FindIndex(t => t.Id == updatableTask.Id);
             //If the task index is valid 
@@ -154,10 +154,10 @@ namespace AppTaskManager.Controllers
         /// Delete task: This method delete task from json-file
         /// </summary>
         /// <param name="removableTask"></param>
-        public void DeleteTask(Models.Task removableTask)
+        public void DeleteTask(Models.TaskModel removableTask)
         {
             //Loading all tasks from JSON file to List<Task>
-            List<Models.Task> tasks = LoadTasks();
+            List<Models.TaskModel> tasks = LoadTasks();
             //Getting task index in List<Task> by updated task id
             int taskIndex = tasks.FindIndex(t => t.Id == removableTask.Id);
             //If the task index is valid 

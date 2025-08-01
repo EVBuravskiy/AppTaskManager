@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AppTaskManager.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="145" d:DesignWidth="435">
+             d:DesignHeight="145" d:DesignWidth="420">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
@@ -13,7 +13,7 @@
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
         <!--Task Title-->
-        <TextBlock Text="Наименование задачи" 
+        <TextBlock Text="{Binding Title, FallbackValue=Наименование задачи}" 
                    Style="{StaticResource Title}" 
                    VerticalAlignment="Center"
                    Margin="20 0 "/>
@@ -24,7 +24,7 @@
                 Margin="10 0"
                 Background="{StaticResource AccentDark}"
                 CornerRadius="5">
-            <TextBlock Text="Категория"
+            <TextBlock Text="{Binding TaskCategory, FallbackValue=Категория}"
                        Foreground="White"
                        FontWeight="Normal"
                        FontSize="16"/>
@@ -34,14 +34,14 @@
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
             <!--Description-->
-            <TextBlock Text="Описание задачи"
+            <TextBlock Text="{Binding Description, FallbackValue=Описание задачи}"
                        TextWrapping="Wrap"
                        FontSize="16"
                        Foreground="{StaticResource DefaultText}"
                        Margin="20 5 0 0"/>
         </ScrollViewer>
         <!--Date-->
-        <TextBlock Text="23.07.2025"
+        <TextBlock Text="{Binding CreateDateTime, FallbackValue=01.08.2025}"
                            Background="Transparent"
                            Padding="20 3"
                            VerticalAlignment="Center"

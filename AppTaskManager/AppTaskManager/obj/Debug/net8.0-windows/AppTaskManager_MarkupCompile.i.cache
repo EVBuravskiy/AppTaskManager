@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
 F:\Programming\С#\Пет-проекты\AppTaskManager\AppTaskManager\App.xaml
-4-600260165
+61817391071
 
-10771276031
-198-537775612
-Resources\Colors.xaml;Resources\Icons.xaml;Resources\Styles.xaml;Views\TaskManagerMainWindow.xaml;
+15-2029727141
+199664400980
+Resources\Colors.xaml;Resources\Icons.xaml;Resources\Styles.xaml;Views\NewTaskWindow.xaml;Views\TaskListItem.xaml;Views\TaskManagerMainWindow.xaml;
 
-True
+False
 
