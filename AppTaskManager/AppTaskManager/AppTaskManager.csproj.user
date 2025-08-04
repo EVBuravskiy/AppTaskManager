@@ -5,7 +5,10 @@
     <Compile Update="Views\NewTaskWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\TaskListItem.xaml.cs">
+    <Compile Update="Views\TasksViewMainWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\UserControllers\TaskItemView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

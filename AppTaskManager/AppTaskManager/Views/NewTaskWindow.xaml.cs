@@ -18,23 +18,24 @@ using System.Windows.Shapes;
 namespace AppTaskManager.Views
 {
     /// <summary>
-    /// A class associated with a view that contains the logic of the work.
+    /// Логика взаимодействия для NewTaskWindow.xaml
     /// </summary>
     public partial class NewTaskWindow : Window
     {
-        public NewTaskWindow()
+        private TaskViewModel _inputTaskViewModel;
+
+        public NewTaskWindow(TaskViewModel inputTaskViewModel)
         {
             InitializeComponent();
-
-            DataContext = new TaskViewModel();
+            _inputTaskViewModel = inputTaskViewModel;
+            DataContext = _inputTaskViewModel;
         }
 
         private void TaskList_Selected(object sender, SelectionChangedEventArgs e)
         {
             if (TaskList.SelectedItem is TaskCheck selectedCheck)
             {
-                TaskViewModel viewModel = (TaskViewModel)DataContext;
-                viewModel.CheckedTask = selectedCheck;
+                _inputTaskViewModel.SelectedCheck = selectedCheck;
             }
         }
 
@@ -42,8 +43,7 @@ namespace AppTaskManager.Views
         {
             if (ComboBoxImportance.SelectedItem is TaskImportance importance)
             {
-                TaskViewModel viewModel = (TaskViewModel)DataContext;
-                viewModel.TaskModel.TaskImportance = importance;
+                _inputTaskViewModel.TaskModel.TaskImportance = importance;
             }
         }
 
@@ -51,8 +51,7 @@ namespace AppTaskManager.Views
         {
             if (ComboBoxCategory.SelectedItem is TaskCategory category)
             {
-                TaskViewModel viewModel = (TaskViewModel)DataContext;
-                viewModel.TaskModel.TaskCategory = category;
+                _inputTaskViewModel.TaskModel.TaskCategory = category;
             }
         }
     }
