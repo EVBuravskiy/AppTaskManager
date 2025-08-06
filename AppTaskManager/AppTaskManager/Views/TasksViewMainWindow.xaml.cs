@@ -21,13 +21,10 @@ namespace AppTaskManager.Views
     /// </summary>
     public partial class TasksViewMainWindow : Window
     {
-        private MainWindowViewModel viewModel;
-
         public TasksViewMainWindow()
         {
             InitializeComponent();
-            viewModel = new MainWindowViewModel();
-            DataContext = viewModel;
+            DataContext = new MainWindowViewModel();
         }
     }
 }

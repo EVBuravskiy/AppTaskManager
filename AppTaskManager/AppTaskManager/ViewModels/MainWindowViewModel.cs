@@ -1,52 +1,62 @@
 ﻿using AppTaskManager.Controllers;
 using AppTaskManager.Models;
 using AppTaskManager.Views;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace AppTaskManager.ViewModels
 {
-    public class MainWindowViewModel : ObservableObject
+    public class MainWindowViewModel : BaseObservableClass
     {
        
-        private TaskViewModel _taskViewModel;
-        public TaskViewModel TaskViewModel
+        public ITaskController TaskController;
+
+        public ObservableCollection<TaskModel> TaskModels { get; private set; }
+        public MainWindowViewModel()
         {
-            get { return _taskViewModel; }
-            set { OnPropertyChanged(ref  _taskViewModel, value); }
+            TaskController = new MockTaskController();
+            TaskModels = new ObservableCollection<TaskModel>();
+            LoadTasksFromController();
         }
 
-        private ITaskController _taskController;
-
-        private ObservableCollection<TaskModel> _tasks;
-        public ObservableCollection<TaskModel> Tasks
+        private void LoadTasksFromController()
         {
-            get => _tasks;
-            set
+            var tasks = TaskController.GetAllTasks();
+            foreach (var task in tasks)
             {
-                _tasks = value;
-                OnPropertyChanged(ref _tasks, value);
+                TaskModels.Add(task);
             }
         }
 
-        public MainWindowViewModel()
+        public void AddTaskToTaskModels(TaskModel newTask)
         {
-            _taskController = new MockTaskController();
-            TaskViewModel = new TaskViewModel(_taskController);
-            Tasks = TaskViewModel.TasksModels;
+            TaskModels.Add(newTask);
+            OnPropertyChanged(nameof(TaskModel));
         }
 
-        public ICommand IOpenNewWindow => new RelayCommand(OpenNewWindow);
+        public ICommand IOpenNewWindow => new RelayCommand(open => OpenNewWindow());
         private void OpenNewWindow()
         {
-            NewTaskWindow newTaskWindow = new NewTaskWindow(TaskViewModel);
+            NewTaskWindow newTaskWindow = new NewTaskWindow(this);
             newTaskWindow.Show();
+        }
+
+        /// <summary>
+        /// Update task: This method update task into the list of tasks from the TaskDataService and updates the Tasks collection.
+        /// </summary>
+        public void UpdateTask(TaskModel updateTask)
+        {
+            //_taskController.UpdateTask(updateTask);
+            //LoadTasks();
+        }
+
+        /// <summary>
+        /// Delete task: This method remove task from the list of tasks from the TaskDataService and updates the Tasks collection.
+        /// </summary>
+        public void DeleteTask(TaskModel taskModel)
+        {
+            //_taskController.DeleteTask(taskModel);
+            //LoadTasks();
         }
     }
 }

@@ -22,20 +22,20 @@ namespace AppTaskManager.Views
     /// </summary>
     public partial class NewTaskWindow : Window
     {
-        private TaskViewModel _inputTaskViewModel;
+        private TaskViewModel _TaskViewModel;
 
-        public NewTaskWindow(TaskViewModel inputTaskViewModel)
+        public NewTaskWindow(MainWindowViewModel mainViewModel)
         {
             InitializeComponent();
-            _inputTaskViewModel = inputTaskViewModel;
-            DataContext = _inputTaskViewModel;
+            _TaskViewModel = new TaskViewModel(mainViewModel);
+            DataContext = _TaskViewModel;
         }
 
         private void TaskList_Selected(object sender, SelectionChangedEventArgs e)
         {
             if (TaskList.SelectedItem is TaskCheck selectedCheck)
             {
-                _inputTaskViewModel.SelectedCheck = selectedCheck;
+                _TaskViewModel.SelectedCheck = selectedCheck;
             }
         }
 
@@ -43,7 +43,7 @@ namespace AppTaskManager.Views
         {
             if (ComboBoxImportance.SelectedItem is TaskImportance importance)
             {
-                _inputTaskViewModel.TaskModel.TaskImportance = importance;
+                _TaskViewModel.TaskModel.TaskImportance = importance;
             }
         }
 
@@ -51,7 +51,7 @@ namespace AppTaskManager.Views
         {
             if (ComboBoxCategory.SelectedItem is TaskCategory category)
             {
-                _inputTaskViewModel.TaskModel.TaskCategory = category;
+                _TaskViewModel.TaskModel.TaskCategory = category;
             }
         }
     }
