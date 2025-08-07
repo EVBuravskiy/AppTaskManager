@@ -102,6 +102,42 @@ namespace AppTaskManager.Controllers
             }
         }
 
+        public void UpdateTask(TaskModel updatedTask)
+        {
+            if (updatedTask == null)
+            {
+                return;
+            }
+            TaskModel task = _tasks.FirstOrDefault(t => t.Id == updatedTask.Id);
+            if (task == null)
+            {
+                _tasks.Add(updatedTask);
+            }
+            else
+            {
+                {
+                    task = updatedTask;
+                }
+            }
+        }
+
+        public void DeleteTask(TaskModel deletedTask)
+        {
+            if(deletedTask == null)
+            {
+                return;
+            }
+            TaskModel task = _tasks.FirstOrDefault(t => t.Id == deletedTask.Id);
+            if (task == null)
+            {
+                return;
+            }
+            else
+            {
+                _tasks.Remove(deletedTask);
+            }
+        }
+
         /// <summary>
         /// Generate new task id: This method generate new id for new task
         /// </summary>

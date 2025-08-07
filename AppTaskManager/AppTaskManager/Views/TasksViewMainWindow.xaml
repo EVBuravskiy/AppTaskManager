@@ -30,6 +30,7 @@
         </Storyboard>
         <ut:ColorConverter x:Key="ColorConverter"/>
         <ut:TaskEnumConverter x:Key="EnumConverter"/>
+        <ut:CheckBoxEnabledConverter x:Key="EnabledConverter"/>
     </Window.Resources>
 
     <Grid>
@@ -189,12 +190,35 @@
                            VerticalAlignment="Center"
                            Margin="20 0 0 0"/>
                 <!--Check Lists-->
-                <ListView Grid.Row="1"
-                      Background="Transparent"
-                      BorderThickness="0"
-                      Margin="0 20 0 0"
-                          ItemsSource="{Binding SelectedTask.TaskChecks}">
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+                <ListView Grid.Row="0"
+                          Background="Transparent"
+                          BorderThickness="0"
+                          Margin="0 20 0 0"
+                          ItemsSource="{Binding SelectedTask.TaskChecks}"
+                          SelectedItem="{Binding SelectedCheck}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                                <CheckBox IsEnabled="{Binding IsComplete, Converter={StaticResource EnabledConverter}}"
+                                          IsChecked="{Binding IsComplete, Mode=TwoWay}"
+                                          Content="{Binding Description}"
+                                          Margin="5"
+                                          FontSize="14"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
                 </ListView>
+                    <Button Grid.Row="1"  Content="Подтвердить изменение контроля"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            FontWeight="DemiBold"
+                            Style="{StaticResource TaskViewCompleteButton}"
+                            Margin="0 0 10 0"
+                            Command="{Binding ISaveChanges}"/>
+                </Grid>
             </Grid>
             <!--Task View Buttons-->
             <Grid Grid.Row="2">
@@ -205,7 +229,7 @@
                         FontWeight="DemiBold"
                         Style="{StaticResource TaskViewDeleteButton}"
                         Margin="10 0 0 0"
-                        />
+                        Command="{Binding DeleteTaskCommand}"/>
                 <Button Content="Редактировать"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
@@ -216,7 +240,8 @@
                         VerticalAlignment="Center"
                         FontWeight="DemiBold"
                         Style="{StaticResource TaskViewCompleteButton}"
-                        Margin="0 0 10 0"/>
+                        Margin="0 0 10 0"
+                        Command="{Binding ICompletedCommand}"/>
             </Grid>
         </Grid>
 

@@ -13,6 +13,7 @@ namespace AppTaskManager.ViewModels
 {
     public class MainWindowViewModel : BaseObservableClass
     {
+        private TasksViewMainWindow TasksViewMainWindow;
 
         private TaskModel _selectedTask;
         public TaskModel SelectedTask
@@ -21,6 +22,10 @@ namespace AppTaskManager.ViewModels
             set 
             { 
                 _selectedTask = value;
+                if(value == null)
+                {
+                    CreateDefaultSelectTask();
+                }
                 TaskImportance = _selectedTask.TaskImportance;
                 OnPropertyChanged(nameof(SelectedTask));
             }
@@ -52,12 +57,19 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        public bool checkBoxEnabled {  get; set; }
+
         public MainWindowViewModel()
         {
             TaskController = new MockTaskController();
-            TaskModels = new ObservableCollection<TaskModel>();
             LoadTasksFromController();
-            SelectedTask = new TaskModel()
+            CreateDefaultSelectTask();
+            TaskImportance = SelectedTask.TaskImportance;
+        }
+
+        private void CreateDefaultSelectTask()
+        {
+            _selectedTask = new TaskModel()
             {
                 Id = 0,
                 Title = "Наименование задачи",
@@ -71,22 +83,33 @@ namespace AppTaskManager.ViewModels
                 TaskImportance = TaskImportance.Low,
                 TaskChecks = new List<TaskCheck>()
             };
-            TaskImportance = SelectedTask.TaskImportance;
         }
 
         private void LoadTasksFromController()
         {
+            if (TaskModels == null)
+            {
+                TaskModels = new ObservableCollection<TaskModel>();
+            }
+            TaskModels.Clear();
             var tasks = TaskController.GetAllTasks();
             foreach (var task in tasks)
             {
-                TaskModels.Add(task);
+                if (!task.IsCompleted)
+                {
+                    TaskModels.Add(task);
+                }
             }
         }
 
         public void AddTaskToTaskModels(TaskModel newTask)
         {
-            TaskModels.Add(newTask);
-            OnPropertyChanged(nameof(TaskModel));
+            TaskController.AddTask(newTask);
+            LoadTasksFromController();
+            if(SelectedTask == null)
+            {
+                CreateDefaultSelectTask();
+            }
         }
 
         public ICommand IFindTasks => new RelayCommand(find => FindTitleInTasks());
@@ -120,6 +143,14 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        public ICommand ISaveChanges => new RelayCommand(update => UpdateTask());
+
+        private void UpdateTask()
+        {
+            TaskController.UpdateTask(SelectedTask);
+            LoadTasksFromController();
+        }
+
         public ICommand IOpenNewWindow => new RelayCommand(open => OpenNewWindow());
         private void OpenNewWindow()
         {
@@ -127,22 +158,34 @@ namespace AppTaskManager.ViewModels
             newTaskWindow.Show();
         }
 
-        /// <summary>
-        /// Update task: This method update task into the list of tasks from the TaskDataService and updates the Tasks collection.
-        /// </summary>
-        public void UpdateTask(TaskModel updateTask)
+        public ICommand ICompletedCommand => new RelayCommand(complete => CompleteTask());
+
+        private void CompleteTask()
         {
-            //_taskController.UpdateTask(updateTask);
-            //LoadTasks();
+            foreach(TaskCheck check in SelectedTask.TaskChecks)
+            {
+                if(check.IsComplete != true)
+                {
+                    MessageBox.Show("Невозможно завершить выполнение задачи. Не весь контроль выполнен");
+                    return;
+                }
+            }
+            SelectedTask.IsCompleted = true;
+            UpdateTask();
         }
+
+        public ICommand DeleteTaskCommand => new RelayCommand(delete => DeleteTask());
 
         /// <summary>
         /// Delete task: This method remove task from the list of tasks from the TaskDataService and updates the Tasks collection.
         /// </summary>
-        public void DeleteTask(TaskModel taskModel)
+        private void DeleteTask()
         {
-            //_taskController.DeleteTask(taskModel);
-            //LoadTasks();
+            TaskController.DeleteTask(SelectedTask);
+            MessageBox.Show("Удаление задачи успешно завершено");
+            CreateDefaultSelectTask();
+            TaskImportance = SelectedTask.TaskImportance;
+            LoadTasksFromController();
         }
     }
 }

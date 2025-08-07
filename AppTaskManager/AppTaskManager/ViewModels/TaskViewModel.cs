@@ -1,5 +1,6 @@
 ﻿using AppTaskManager.Controllers;
 using AppTaskManager.Models;
+using AppTaskManager.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

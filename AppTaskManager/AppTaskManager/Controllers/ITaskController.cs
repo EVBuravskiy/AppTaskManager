@@ -12,6 +12,10 @@ namespace AppTaskManager.Controllers
         IEnumerable<TaskModel> GetAllTasks();
         void SaveTasks(IEnumerable<TaskModel> tasks);
         void AddTask(TaskModel newTask);
+
+        void UpdateTask(TaskModel task);
+
+        void DeleteTask(TaskModel task);
         public int GenerateNewTaskId();
     }
 }
