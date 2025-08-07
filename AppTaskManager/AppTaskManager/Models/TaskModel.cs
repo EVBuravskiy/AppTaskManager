@@ -32,7 +32,8 @@ namespace AppTaskManager.Models
         Create,
         InProgress,
         Completed,
-        Late
+        Late,
+        Deleted
     }
 
     public enum TaskCategory
@@ -47,6 +48,6 @@ namespace AppTaskManager.Models
         Low,
         Medium,
         High,
-        Critical
+        Critical,
     }
 }

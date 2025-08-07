@@ -2,10 +2,12 @@
 using AppTaskManager.Models;
 using AppTaskManager.Views;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace AppTaskManager.ViewModels
 {
@@ -19,8 +21,19 @@ namespace AppTaskManager.ViewModels
             set 
             { 
                 _selectedTask = value;
-
+                TaskImportance = _selectedTask.TaskImportance;
                 OnPropertyChanged(nameof(SelectedTask));
+            }
+        }
+
+        private TaskImportance _taskImportance;
+        public TaskImportance TaskImportance
+        {
+            get { return _taskImportance; }
+            set
+            {
+                _taskImportance = value;
+                OnPropertyChanged(nameof(TaskImportance));
             }
         }
 
@@ -58,6 +71,7 @@ namespace AppTaskManager.ViewModels
                 TaskImportance = TaskImportance.Low,
                 TaskChecks = new List<TaskCheck>()
             };
+            TaskImportance = SelectedTask.TaskImportance;
         }
 
         private void LoadTasksFromController()

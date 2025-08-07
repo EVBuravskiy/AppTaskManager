@@ -22,9 +22,9 @@
                 VerticalAlignment="Center"
                 Padding="40 0"
                 Margin="10 0"
-                Background="{StaticResource Category.work}"
+                Background="{Binding TaskCategory, Converter={StaticResource ColorConverter}}"
                 CornerRadius="5">
-            <TextBlock Text="{Binding TaskCategory, FallbackValue=Category}"
+            <TextBlock Text="{Binding TaskCategory, Converter={StaticResource EnumConverter}, FallbackValue=Category}"
                        Foreground="White"
                        FontWeight="Normal"
                        FontSize="16"/>
