@@ -68,8 +68,8 @@
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="260"/>
+                <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
             <!--Title-->
             <TextBox x:Name="TaskTitle" Grid.Column="0"
@@ -219,9 +219,9 @@
             <StackPanel Grid.Row="0"
                         Orientation="Horizontal"
                         Margin="20 0">
-                <CheckBox VerticalAlignment="Center"></CheckBox>
+                <CheckBox VerticalAlignment="Center" IsChecked="{Binding StartTask}"/>
                 <Label VerticalAlignment="Center" 
-                       Content="Подключить таймер к выполнению задачи"
+                       Content="Незамедлительно начать выполнение задачи"
                        Margin="20 0"></Label>
             </StackPanel>
             <StackPanel Grid.Row="1"

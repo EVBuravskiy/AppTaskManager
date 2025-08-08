@@ -54,13 +54,13 @@ namespace AppTaskManager.Models
 
     public enum TaskImportance
     {
-        [Description("Низкая важность")]
+        [Description("Важность низкая")]
         Low,
-        [Description("Средняя важность")]
+        [Description("Важность средняя")]
         Medium,
-        [Description("Высокая важность")]
+        [Description("Важность высокая")]
         High,
-        [Description("Незамедлительно")]
+        [Description("Важность критическая")]
         Critical,
     }
 }

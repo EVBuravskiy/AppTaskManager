@@ -164,6 +164,17 @@ namespace AppTaskManager.ViewModels
             newTaskWindow.Show();
         }
 
+        public ICommand IBeginTask => new RelayCommand(begin => BeginTask());
+        private void BeginTask()
+        {
+            if (SelectedTask.Id == 0)
+            {
+                return;
+            }
+            SelectedTask.StartTime = DateTime.Now;
+            UpdateTask();
+        }
+
         public ICommand ICompletedCommand => new RelayCommand(complete => CompleteTask());
 
         private void CompleteTask()

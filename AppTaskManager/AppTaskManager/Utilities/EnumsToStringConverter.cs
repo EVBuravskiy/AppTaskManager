@@ -27,7 +27,7 @@ namespace AppTaskManager.Utilities
                 {
                     TaskCategory.Home => "Дом",
                     TaskCategory.Work => "Работа",
-                    TaskCategory.Education => "Учеба",
+                    TaskCategory.Education => "Обучение",
                 };
             }
             return "";

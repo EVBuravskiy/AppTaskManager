@@ -68,6 +68,8 @@ namespace AppTaskManager.ViewModels
 
         private bool IsNew { get; set; }
 
+        public bool StartTask { get; set; }
+
         /// <summary>
         /// Constructor for the TaskViewModel. 
         /// It get TaskController, load all tasks, initialize instance of the TaskModel class, and clear TaskCheckList
@@ -131,8 +133,6 @@ namespace AppTaskManager.ViewModels
             }
         }
 
-
-
         /// <summary>
         /// Add control check command
         /// </summary>
@@ -176,6 +176,10 @@ namespace AppTaskManager.ViewModels
         /// </summary>
         public void AddNewTask()
         {
+            if (StartTask)
+            {
+                TaskModel.StartTime = DateTime.Now;
+            }
             if (IsNew)
             {
                 TaskModel.Id = _MainWindowViewModel.TaskController.GenerateNewTaskId();
@@ -203,6 +207,8 @@ namespace AppTaskManager.ViewModels
             else
             {
                 _MainWindowViewModel.UpdateTask();
+                IsNew = true;
+                ClearFields();
             }
         }
 

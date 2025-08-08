@@ -219,6 +219,35 @@
         </Setter>
     </Style>
 
+    <!--Begin button-->
+    <Style x:Key="TaskBeginButton" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource Button.Begin}"/>
+        <Setter Property="Foreground" Value="DimGray"/>
+        <Setter Property="Padding" Value="40 5"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            Margin="{TemplateBinding Margin}"
+                            CornerRadius="5">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource Button.Begin.Over}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{StaticResource Button.Begin.Click}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!--Task Title Box-->
     <Style x:Key="TaskTitleBox" TargetType="TextBox">
         <Setter Property="Height" Value="30"/>

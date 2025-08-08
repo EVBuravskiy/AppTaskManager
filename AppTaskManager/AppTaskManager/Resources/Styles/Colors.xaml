@@ -41,6 +41,10 @@
     <SolidColorBrush x:Key="Button.Delete" Color="Red"/>
     <SolidColorBrush x:Key="Button.Delete.Over" Color="DarkRed"/>
     <SolidColorBrush x:Key="Button.Delete.Click" Color="LightCoral"/>
+    <!--Begin Button-->
+    <SolidColorBrush x:Key="Button.Begin" Color="LightBlue"/>
+    <SolidColorBrush x:Key="Button.Begin.Over" Color="SkyBlue"/>
+    <SolidColorBrush x:Key="Button.Begin.Click" Color="LightSkyBlue"/>
 
 
     <!--Task Importance Colors-->
