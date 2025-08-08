@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AppTaskManager.Views" 
+        xmlns:utils="clr-namespace:AppTaskManager.Utilities"
         mc:Ignorable="d"
-        Title="NewTaskWindow" Height="830" Width="800"
+        Title="Редактор задачи" Height="830" Width="800"
         MinHeight="680" MinWidth="600">
     <Window.Resources>
         <Storyboard x:Key="EmergingOnLoad">
@@ -88,16 +89,16 @@
             <ComboBox x:Name="ComboBoxImportance"
                       Style="{StaticResource TaskComboBox}"
                       Grid.Column="1"
+                      SelectedIndex="{Binding TaskModel.TaskImportance, Converter={StaticResource TaskImportanceToIntConverter}}"
                       ItemsSource="{Binding TaskImportancies}"
-                      SelectedIndex="0"
-                      SelectionChanged="Importance_Selected"/>
+                      SelectedItem="{Binding TaskModel.TaskImportance}"/>
             <!--Category Combo Box-->
             <ComboBox x:Name="ComboBoxCategory"
                       Style="{StaticResource TaskComboBox}"
                       Grid.Column="2"
                       ItemsSource="{Binding TaskCategories}"
-                      SelectedIndex="0"
-                      SelectionChanged="Category_Selected"/>
+                      SelectedIndex="{Binding TaskModel.TaskCategory, Converter={StaticResource TaskCategoryToIntConverter}}"
+                      SelectedItem="{Binding TaskModel.TaskCategory}"/>
         </Grid>
 
         <!--Second row-->
@@ -240,7 +241,7 @@
                     Margin="10 0 0 10"
                     Command="{Binding IClearTask}"/>
             <Button Grid.Row="2" 
-                    Content="Создать задачу"
+                    Content="Сохранить задачу"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Style="{StaticResource TaskViewCompleteButton}"

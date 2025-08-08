@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security.RightsManagement;
 using System.Text;
@@ -29,25 +30,37 @@ namespace AppTaskManager.Models
 
     public enum TaskState
     {
+        [Description("Задача создана")]
         Create,
+        [Description("Задача выполняется")]
         InProgress,
+        [Description("Задача выполнена")]
         Completed,
+        [Description("Задача не выполнена")]
         Late,
+        [Description("Задача удалена")]
         Deleted
     }
 
     public enum TaskCategory
     {
+        [Description("Работа")]
         Work,
+        [Description("Дом")]
         Home,
+        [Description("Обучение")]
         Education
     }
 
     public enum TaskImportance
     {
+        [Description("Низкая важность")]
         Low,
+        [Description("Средняя важность")]
         Medium,
+        [Description("Высокая важность")]
         High,
+        [Description("Незамедлительно")]
         Critical,
     }
 }

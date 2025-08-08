@@ -24,7 +24,7 @@
                 Margin="10 0"
                 Background="{Binding TaskCategory, Converter={StaticResource ColorConverter}}"
                 CornerRadius="5">
-            <TextBlock Text="{Binding TaskCategory, Converter={StaticResource EnumConverter}, FallbackValue=Category}"
+            <TextBlock Text="{Binding TaskCategory, Converter={StaticResource EnumDescriptionConverter}, FallbackValue=Category}"
                        Foreground="White"
                        FontWeight="Normal"
                        FontSize="16"/>

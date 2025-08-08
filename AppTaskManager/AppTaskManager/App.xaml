@@ -12,8 +12,12 @@
                 <ResourceDictionary Source="/Resources/Styles/Icons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <ut:CheckBoxEnabledConverter x:Name="CheckBoxEnabledConverter" x:Key="CheckBoxEnabledConverter"/>
             <ut:ColorConverter x:Name="ColorConverter" x:Key="ColorConverter"/>
-            <ut:TaskEnumConverter x:Name="EnumConverter" x:Key="EnumConverter"/>
+            <ut:EnumDescriptionConverter x:Name="EnumDescriptionConverter" x:Key="EnumDescriptionConverter"/>
+            <ut:TaskCategoryToIntConverter x:Name="TaskCategoryToIntConverter" x:Key="TaskCategoryToIntConverter"/>
+            <ut:TaskImportanceToIntConverter x:Name="TaskImportanceToIntConverter" x:Key="TaskImportanceToIntConverter"/>
+            <ut:TaskStateToIntConverter x:Name="TaskStateToIntConverter" x:Key="TaskStateToIntConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

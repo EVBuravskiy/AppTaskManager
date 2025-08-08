@@ -1,5 +1,6 @@
 ﻿using AppTaskManager.Controllers;
 using AppTaskManager.Models;
+using AppTaskManager.Utilities;
 using AppTaskManager.Views;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Media3D;
 
 namespace AppTaskManager.ViewModels
 {
@@ -36,12 +39,17 @@ namespace AppTaskManager.ViewModels
         /// <summary>
         /// Array of task categories for combobox
         /// </summary>
-        public Array TaskCategories => Enum.GetValues(typeof(TaskCategory));
+        //public Array TaskCategories => Enum.GetValues(typeof(TaskCategory));
+        public List<string> TaskCategories { get; set; }
+        public string InputCategory { get; set; }
 
         /// <summary>
         /// Array of task categories for combobox
         /// </summary>
-        public Array TaskImportancies => Enum.GetValues(typeof(TaskImportance));
+        //public Array TaskImportancies => Enum.GetValues(typeof(TaskImportance));
+
+        public List<string> TaskImportancies { get; set; }
+        public string InputImportance { get; set; }
 
         /// <summary>
         /// Public property holding selected TaskCheck
@@ -58,18 +66,42 @@ namespace AppTaskManager.ViewModels
         /// </summary>
         public ObservableCollection<TaskCheck> TaskCheckList {  get; set; }
 
+        private bool IsNew { get; set; }
+
         /// <summary>
         /// Constructor for the TaskViewModel. 
         /// It get TaskController, load all tasks, initialize instance of the TaskModel class, and clear TaskCheckList
         /// </summary>
         /// <param name="taskController"></param>
-        public TaskViewModel(MainWindowViewModel mainViewModel)
+        public TaskViewModel(MainWindowViewModel mainViewModel, bool isNew = true)
         {
+            IsNew = isNew;
             _MainWindowViewModel = mainViewModel;
             //Intialize instance of the TaskModel class
-            _taskModel = new TaskModel();
-            _taskModel.CreationTime = DateTime.Now;
-            _taskModel.EndTime = DateTime.Now;
+            InitializeTaskModel();
+            InitializeListCategories();
+        }
+
+        private void InitializeListCategories()
+        {
+            TaskImportancies = new List<string>();
+            var importancies = Enum.GetValues(typeof(TaskImportance));
+            foreach (var important in importancies)
+            {
+                TaskImportancies.Add(EnumsToStringConverter.EnumToString(important));
+            };
+            TaskCategories = new List<string>();
+            var categories = Enum.GetValues(typeof(TaskCategory));
+            foreach (var category in categories)
+            {
+                TaskCategories.Add(EnumsToStringConverter.EnumToString(category));
+            }
+        }
+
+
+        private void InitializeTaskModel()
+        {
+            //var indexCategory = Enum.GetValue(typeof(TaskCategory));
             //Initialize observable collection of TaskCheckList
             if (TaskCheckList != null)
             {
@@ -79,7 +111,27 @@ namespace AppTaskManager.ViewModels
             {
                 TaskCheckList = new ObservableCollection<TaskCheck>();
             }
+
+            //Initialize instance of the TaskModel class
+            if (IsNew)
+            {
+                _taskModel = new TaskModel();
+                _taskModel.TaskCategory = TaskCategory.Work;
+                _taskModel.TaskImportance = TaskImportance.Low;
+                _taskModel.CreationTime = DateTime.Now;
+                _taskModel.EndTime = DateTime.Now;
+            }
+            else
+            {
+                _taskModel = _MainWindowViewModel.SelectedTask;
+                foreach (TaskCheck check in _MainWindowViewModel.SelectedTask.TaskChecks)
+                {
+                    TaskCheckList.Add(check);
+                }
+            }
         }
+
+
 
         /// <summary>
         /// Add control check command
@@ -124,27 +176,34 @@ namespace AppTaskManager.ViewModels
         /// </summary>
         public void AddNewTask()
         {
-            TaskModel.Id = _MainWindowViewModel.TaskController.GenerateNewTaskId();
-            TaskModel newTask = new TaskModel()
+            if (IsNew)
             {
-                Id = TaskModel.Id,
-                Title = TaskModel.Title,
-                Description = TaskModel.Description,
-                CreationTime = TaskModel.CreationTime,
-                StartTime = TaskModel.StartTime,
-                EndTime = TaskModel.EndTime,
-                IsCompleted = TaskModel.IsCompleted,
-                TaskState = TaskModel.TaskState,
-                TaskCategory = TaskModel.TaskCategory,
-                TaskImportance = TaskModel.TaskImportance,
-                TaskChecks = new List<TaskCheck>()
-            };
-            foreach (TaskCheck check in TaskCheckList)
-            {
-                newTask.TaskChecks.Add(check);
+                TaskModel.Id = _MainWindowViewModel.TaskController.GenerateNewTaskId();
+                TaskModel newTask = new TaskModel()
+                {
+                    Id = TaskModel.Id,
+                    Title = TaskModel.Title,
+                    Description = TaskModel.Description,
+                    CreationTime = TaskModel.CreationTime,
+                    StartTime = TaskModel.StartTime,
+                    EndTime = TaskModel.EndTime,
+                    IsCompleted = TaskModel.IsCompleted,
+                    TaskState = TaskModel.TaskState,
+                    TaskCategory = TaskModel.TaskCategory,
+                    TaskImportance = TaskModel.TaskImportance,
+                    TaskChecks = new List<TaskCheck>()
+                };
+                foreach (TaskCheck check in TaskCheckList)
+                {
+                    newTask.TaskChecks.Add(check);
+                }
+                _MainWindowViewModel.AddTaskToTaskModels(newTask);
+                ClearFields();
             }
-            _MainWindowViewModel.AddTaskToTaskModels(newTask);
-            ClearFields();
+            else
+            {
+                _MainWindowViewModel.UpdateTask();
+            }
         }
 
         /// <summary>

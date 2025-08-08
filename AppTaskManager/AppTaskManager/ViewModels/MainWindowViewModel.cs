@@ -145,16 +145,22 @@ namespace AppTaskManager.ViewModels
 
         public ICommand ISaveChanges => new RelayCommand(update => UpdateTask());
 
-        private void UpdateTask()
+        public void UpdateTask()
         {
             TaskController.UpdateTask(SelectedTask);
             LoadTasksFromController();
         }
 
+        public ICommand IOpenEditTask => new RelayCommand(open => OpenNewWindow(false));
+
         public ICommand IOpenNewWindow => new RelayCommand(open => OpenNewWindow());
-        private void OpenNewWindow()
+        private void OpenNewWindow(bool isNew = true)
         {
-            NewTaskWindow newTaskWindow = new NewTaskWindow(this);
+            if(SelectedTask.Id == 0)
+            {
+                isNew = true;
+            }
+            NewTaskWindow newTaskWindow = new NewTaskWindow(this, isNew);
             newTaskWindow.Show();
         }
 

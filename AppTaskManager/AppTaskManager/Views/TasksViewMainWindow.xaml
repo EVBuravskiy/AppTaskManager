@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AppTaskManager.Views"
         xmlns:uc="clr-namespace:AppTaskManager.Views.UserControllers" 
-        xmlns:ut="clr-namespace:AppTaskManager.Utilities"
         mc:Ignorable="d"
         Title="Менеджер задач" Height="800" Width="1400"
         MinHeight="450" MinWidth="1170"
@@ -28,9 +27,6 @@
                 </ThicknessAnimation.EasingFunction>
             </ThicknessAnimation>
         </Storyboard>
-        <ut:ColorConverter x:Key="ColorConverter"/>
-        <ut:TaskEnumConverter x:Key="EnumConverter"/>
-        <ut:CheckBoxEnabledConverter x:Key="EnabledConverter"/>
     </Window.Resources>
 
     <Grid>
@@ -153,7 +149,7 @@
                         Padding="20 5"
                         Background="{Binding TaskImportance, Converter={StaticResource ColorConverter}}"
                         CornerRadius="5">
-                    <TextBlock Text="{Binding SelectedTask.TaskImportance, Converter={StaticResource EnumConverter}}"
+                    <TextBlock Text="{Binding SelectedTask.TaskImportance, Converter={StaticResource EnumDescriptionConverter}}"
                                Foreground="WhiteSmoke"
                                FontWeight="DemiBold"
                                FontSize="16"/>
@@ -203,7 +199,7 @@
                           SelectedItem="{Binding SelectedCheck}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                                <CheckBox IsEnabled="{Binding IsComplete, Converter={StaticResource EnabledConverter}}"
+                                <CheckBox IsEnabled="{Binding IsComplete, Converter={StaticResource CheckBoxEnabledConverter}}"
                                           IsChecked="{Binding IsComplete, Mode=TwoWay}"
                                           Content="{Binding Description}"
                                           Margin="5"
@@ -234,7 +230,8 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         FontWeight="DemiBold"
-                        Style="{StaticResource TaskViewEditButton}"/>
+                        Style="{StaticResource TaskViewEditButton}"
+                        Command="{Binding IOpenEditTask}"/>
                 <Button Content="Выполнено"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"

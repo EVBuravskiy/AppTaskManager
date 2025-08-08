@@ -24,10 +24,10 @@ namespace AppTaskManager.Views
     {
         private TaskViewModel _TaskViewModel;
 
-        public NewTaskWindow(MainWindowViewModel mainViewModel)
+        public NewTaskWindow(MainWindowViewModel mainViewModel, bool isNew = true)
         {
             InitializeComponent();
-            _TaskViewModel = new TaskViewModel(mainViewModel);
+            _TaskViewModel = new TaskViewModel(mainViewModel, isNew);
             DataContext = _TaskViewModel;
         }
 
