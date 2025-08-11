@@ -19,14 +19,32 @@ namespace AppTaskManager.ViewModels
         public TaskModel SelectedTask
         {
             get { return _selectedTask; }
-            set 
-            { 
+            set
+            {
                 _selectedTask = value;
-                if(value == null)
+                if (value == null)
                 {
                     CreateDefaultSelectTask();
                 }
                 TaskImportance = _selectedTask.TaskImportance;
+                ChecksChecked = 0;
+                foreach (var check in _selectedTask.TaskChecks)
+                {
+                    if (check.IsComplete == false)
+                    {
+                        IsCompleted = false;
+                        break;
+                    }
+                    IsCompleted = true;
+                }
+                foreach (var check in _selectedTask.TaskChecks)
+                {
+                    if (check.IsComplete == true)
+                    {
+                        ChecksChecked++;
+                    }
+                }
+                ChecksCount = _selectedTask.TaskChecks.Count;
                 OnPropertyChanged(nameof(SelectedTask));
             }
         }
@@ -50,19 +68,52 @@ namespace AppTaskManager.ViewModels
         public string SearchTitle
         {
             get { return _searchTitle; }
-            set 
-            { 
-                _searchTitle = value; 
+            set
+            {
+                _searchTitle = value;
                 OnPropertyChanged(nameof(SearchTitle));
             }
         }
 
-        public bool checkBoxEnabled {  get; set; }
+        public bool checkBoxEnabled { get; set; }
+
+        private bool _isCompleted;
+        public bool IsCompleted
+        {
+            get => _isCompleted;
+            set
+            {
+                _isCompleted = value;
+                OnPropertyChanged(nameof(IsCompleted));
+            }
+        }
+
+        private int _checksCount;
+        public int ChecksCount
+        {
+            get => _checksCount;
+            set
+            {
+                _checksCount = value;
+                OnPropertyChanged(nameof(ChecksCount));
+            }
+        }
+
+        private int _checksChecked;
+        public int ChecksChecked
+        {
+            get => _checksChecked;
+            set
+            {
+                _checksChecked = value;
+                OnPropertyChanged(nameof(ChecksChecked));
+            }
+        }
 
         public MainWindowViewModel()
         {
             TaskController = new MockTaskController();
-            LoadTasksFromController();
+            LoadUncompletedTasks();
             CreateDefaultSelectTask();
             TaskImportance = SelectedTask.TaskImportance;
         }
@@ -85,7 +136,8 @@ namespace AppTaskManager.ViewModels
             };
         }
 
-        private void LoadTasksFromController()
+        public ICommand ILoadUncompletedTasks => new RelayCommand(all => LoadUncompletedTasks());
+        private void LoadUncompletedTasks()
         {
             if (TaskModels == null)
             {
@@ -102,11 +154,118 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        public ICommand ILoadAllTasks => new RelayCommand(all => LoadAllTasks());
+        private void LoadAllTasks()
+        {
+            if (TaskModels == null)
+            {
+                TaskModels = new ObservableCollection<TaskModel>();
+            }
+            TaskModels.Clear();
+            var tasks = TaskController.GetAllTasks();
+            foreach (var task in tasks)
+            {
+                TaskModels.Add(task);
+            }
+        }
+
+        public ICommand ILoadCriticalTasks => new RelayCommand(critical => LoadCriticalTasks());
+        private void LoadCriticalTasks()
+        {
+            if (TaskModels == null)
+            {
+                TaskModels = new ObservableCollection<TaskModel>();
+            }
+            TaskModels.Clear();
+            var tasks = TaskController.GetAllTasks();
+            foreach (var task in tasks)
+            {
+                if (task.TaskImportance == TaskImportance.Critical)
+                {
+                    TaskModels.Add(task);
+                }
+            }
+        }
+
+        public ICommand ILoadHighTasks => new RelayCommand(high => LoadHighTasks());
+        private void LoadHighTasks()
+        {
+            if (TaskModels == null)
+            {
+                TaskModels = new ObservableCollection<TaskModel>();
+            }
+            TaskModels.Clear();
+            var tasks = TaskController.GetAllTasks();
+            foreach (var task in tasks)
+            {
+                if (task.TaskImportance == TaskImportance.High)
+                {
+                    TaskModels.Add(task);
+                }
+            }
+        }
+
+        public ICommand ILoadMediumTasks => new RelayCommand(medium => LoadMediumTasks());
+        private void LoadMediumTasks()
+        {
+            if (TaskModels == null)
+            {
+                TaskModels = new ObservableCollection<TaskModel>();
+            }
+            TaskModels.Clear();
+            var tasks = TaskController.GetAllTasks();
+            foreach (var task in tasks)
+            {
+                if (task.TaskImportance == TaskImportance.Medium)
+                {
+                    TaskModels.Add(task);
+                }
+            }
+        }
+
+        public ICommand ILoadLowTasks => new RelayCommand(low => LoadLowTasks());
+        private void LoadLowTasks()
+        {
+            if (TaskModels == null)
+            {
+                TaskModels = new ObservableCollection<TaskModel>();
+            }
+            TaskModels.Clear();
+            var tasks = TaskController.GetAllTasks();
+            foreach (var task in tasks)
+            {
+                if (task.TaskImportance == TaskImportance.Low)
+                {
+                    TaskModels.Add(task);
+                }
+            }
+        }
+
+        public ICommand ILoadCompletedTasks => new RelayCommand(completed => LoadCompletedTasks());
+
+        private void LoadCompletedTasks()
+        {
+            if (TaskModels == null)
+            {
+                TaskModels = new ObservableCollection<TaskModel>();
+            }
+            TaskModels.Clear();
+            var tasks = TaskController.GetAllTasks();
+            foreach (var task in tasks)
+            {
+                if (task.IsCompleted)
+                {
+                    TaskModels.Add(task);
+                }
+            }
+        }
+
+
         public void AddTaskToTaskModels(TaskModel newTask)
         {
             TaskController.AddTask(newTask);
-            LoadTasksFromController();
-            if(SelectedTask == null)
+            LoadUncompletedTasks();
+            if (SelectedTask == null)
             {
                 CreateDefaultSelectTask();
             }
@@ -118,7 +277,7 @@ namespace AppTaskManager.ViewModels
             ObservableCollection<TaskModel> searchTask = new ObservableCollection<TaskModel>();
             if (SearchTitle == String.Empty)
             {
-                LoadTasksFromController();
+                LoadUncompletedTasks();
                 return;
             }
             foreach (TaskModel task in TaskModels)
@@ -147,8 +306,20 @@ namespace AppTaskManager.ViewModels
 
         public void UpdateTask()
         {
+            if (SelectedTask.Id == 0)
+            {
+                return;
+            }
             TaskController.UpdateTask(SelectedTask);
-            LoadTasksFromController();
+            foreach (TaskCheck check in SelectedTask.TaskChecks)
+            {
+                if (check.IsComplete != true)
+                {
+                    IsCompleted = false;
+                    break;
+                }
+                IsCompleted = true;
+            }
         }
 
         public ICommand IOpenEditTask => new RelayCommand(open => OpenNewWindow(false));
@@ -156,7 +327,7 @@ namespace AppTaskManager.ViewModels
         public ICommand IOpenNewWindow => new RelayCommand(open => OpenNewWindow());
         private void OpenNewWindow(bool isNew = true)
         {
-            if(SelectedTask.Id == 0)
+            if (SelectedTask.Id == 0)
             {
                 isNew = true;
             }
@@ -179,9 +350,13 @@ namespace AppTaskManager.ViewModels
 
         private void CompleteTask()
         {
-            foreach(TaskCheck check in SelectedTask.TaskChecks)
+            if (SelectedTask.Id == 0)
             {
-                if(check.IsComplete != true)
+                return;
+            }
+            foreach (TaskCheck check in SelectedTask.TaskChecks)
+            {
+                if (check.IsComplete != true)
                 {
                     MessageBox.Show("Невозможно завершить выполнение задачи. Не весь контроль выполнен");
                     return;
@@ -189,6 +364,8 @@ namespace AppTaskManager.ViewModels
             }
             SelectedTask.IsCompleted = true;
             UpdateTask();
+            LoadUncompletedTasks();
+            IsCompleted = false;
         }
 
         public ICommand DeleteTaskCommand => new RelayCommand(delete => DeleteTask());
@@ -202,7 +379,8 @@ namespace AppTaskManager.ViewModels
             MessageBox.Show("Удаление задачи успешно завершено");
             CreateDefaultSelectTask();
             TaskImportance = SelectedTask.TaskImportance;
-            LoadTasksFromController();
+            LoadUncompletedTasks();
         }
     }
 }
+

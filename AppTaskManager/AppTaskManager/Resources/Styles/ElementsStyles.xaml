@@ -2,11 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--Navigation Buttons-->
     <Style x:Key="NavigationButton" TargetType="Button">
-        <Setter Property="Background" Value="{StaticResource NavButton.Default}"/>
-        <Setter Property="Margin" Value="0 0 0 30"/>
-        <Setter Property="Height" Value="40"/>
-        <Setter Property="Width" Value="40"/>
-        <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -14,6 +9,7 @@
                             Padding="{TemplateBinding Padding}"
                             CornerRadius="5">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -26,6 +22,61 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+
+    <!--Menu items-->
+    <Style x:Key="MainMenuItem" TargetType="MenuItem">
+        <Setter Property="Background" Value="{StaticResource NavButton.Default}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    <Border x:Name="border"
+                            Background="{StaticResource AccentDark}"
+                            BorderThickness="0"
+                            Height="40"
+                            Margin="2"
+                            Padding="5"
+                            CornerRadius="5">
+                        <Grid>
+                            <ContentPresenter ContentSource="Header"
+                                              TextBlock.Foreground="WhiteSmoke"
+                                              TextBlock.FontSize="16"
+                                              TextBlock.FontWeight="DemiBold"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                            <Popup x:Name="PART_Popup"
+                                   AllowsTransparency="True"
+                                   IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                   PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
+                                <Border x:Name="SubMenuBorder" 
+                                        Background="{StaticResource AccentDark}" 
+                                        BorderBrush="DimGray"
+                                        CornerRadius="5"
+                                        BorderThickness="2">
+                                    <ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                        <Grid RenderOptions.ClearTypeHint="Enabled">
+                                            <Canvas HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                            <ItemsPresenter x:Name="ItemsPresenter"/>
+                                        </Grid>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="border"  Value="{StaticResource NavButton.Over}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource NavButton.Click}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
     </Style>
 
     <!--Header (H1)-->

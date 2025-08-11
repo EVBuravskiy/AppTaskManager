@@ -5,10 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AppTaskManager.Views.UserControllers"
              mc:Ignorable="d" 
-              d:DesignHeight="145" d:DesignWidth="400">
+              d:DesignHeight="200" d:DesignWidth="400">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="80"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
@@ -18,17 +18,30 @@
                    VerticalAlignment="Center"
                    Margin="20 0 "/>
         <!--Category Badge-->
-        <Border HorizontalAlignment="Right"
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Right">
+            <Border HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Padding="40 0"
-                Margin="10 0"
-                Background="{Binding TaskCategory, Converter={StaticResource ColorConverter}}"
+                Padding="40 5 40 5"
+                Margin="10 5"
+                Background="{Binding TaskImportance, Converter={StaticResource ColorConverter}}"
                 CornerRadius="5">
-            <TextBlock Text="{Binding TaskCategory, Converter={StaticResource EnumDescriptionConverter}, FallbackValue=Category}"
+                <TextBlock Text="{Binding TaskImportance, Converter={StaticResource EnumDescriptionConverter}, FallbackValue=Importance}"
                        Foreground="White"
                        FontWeight="Normal"
                        FontSize="16"/>
-        </Border>
+            </Border>
+            <Border HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Padding="40 5 40 5"
+                Margin="10 5"
+                Background="{Binding TaskCategory, Converter={StaticResource ColorConverter}}"
+                CornerRadius="5">
+                <TextBlock Text="{Binding TaskCategory, Converter={StaticResource EnumDescriptionConverter}, FallbackValue=Category}"
+                       Foreground="White"
+                       FontWeight="Normal"
+                       FontSize="16"/>
+            </Border>
+        </StackPanel>
         <!--Description Scroll Viewer-->
         <ScrollViewer Grid.Row="1"
                       VerticalScrollBarVisibility="Auto"

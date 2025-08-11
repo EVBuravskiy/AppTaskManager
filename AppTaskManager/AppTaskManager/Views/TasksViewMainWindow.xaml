@@ -37,14 +37,29 @@
             <ColumnDefinition Width="200" />
         </Grid.ColumnDefinitions>
 
+
         <!--Navigation panel-->
         <Rectangle Fill="{StaticResource AccentDark}" Grid.Column="0"/>
         <StackPanel Grid.Column="0" Margin="10 15 10 10">
-            <Button Style="{StaticResource NavigationButton}">
-                <Viewbox Width="30" Height="30">
-                    <Path Data="{StaticResource ListIcon}" Fill="{StaticResource OnAccent}"/>
-                </Viewbox>
-            </Button>
+            <Menu Width="60" Height="60" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center" Background="Transparent">
+                <MenuItem Height="60" Width="60" Background="Transparent">
+                    <MenuItem.Icon>
+                        <Viewbox RenderTransformOrigin="0.54,0.271" Margin="3,-13,-35,-10" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30">
+                            <Path Data="{StaticResource ListIcon}" Fill="{StaticResource OnAccent}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Viewbox>
+                    </MenuItem.Icon>
+                    <MenuItem Style="{StaticResource MainMenuItem}" Header="Все задачи" Command="{Binding ILoadAllTasks}"/>
+                    <MenuItem Style="{StaticResource MainMenuItem}" Header="Невыполненные задачи" Command="{Binding ILoadUncompletedTasks}"/>
+                    <MenuItem Style="{StaticResource MainMenuItem}" Header="Задачи по категориям">
+                        <MenuItem Style="{StaticResource MainMenuItem}" Header="Неотложные" Command="{Binding ILoadCriticalTasks}"/>
+                        <MenuItem Style="{StaticResource MainMenuItem}" Header="Высокой важности" Command="{Binding ILoadHighTasks}"/>
+                        <MenuItem Style="{StaticResource MainMenuItem}" Header="Средней важности" Command="{Binding ILoadMediumTasks}"/>
+                        <MenuItem Style="{StaticResource MainMenuItem}" Header="Низкой важности" Command="{Binding ILoadLowTasks}"/>
+                        <MenuItem Style="{StaticResource MainMenuItem}" Header="Выполненные задачи" Command="{Binding ILoadCompletedTasks}"/>
+                    </MenuItem>
+
+                </MenuItem>
+            </Menu>
         </StackPanel>
 
         <!--Task List Background-->
@@ -246,7 +261,8 @@
                         FontWeight="DemiBold"
                         Style="{StaticResource TaskViewCompleteButton}"
                         Margin="0 0 10 0"
-                        Command="{Binding ICompletedCommand}"/>
+                        Command="{Binding ICompletedCommand}"
+                        IsEnabled="{Binding IsCompleted}"/>
             </Grid>
         </Grid>
 
