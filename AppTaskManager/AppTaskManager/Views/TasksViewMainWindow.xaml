@@ -282,7 +282,13 @@
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <Viewbox Grid.Row="0" Stretch="Uniform" StretchDirection="UpOnly">
-                <Calendar HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" SelectedDate="{Binding SelectedDate}"/>
+                <Calendar x:Name="TaskCalendar" 
+                          HorizontalAlignment="Center" 
+                          VerticalAlignment="Center" 
+                          Margin="5" 
+                          SelectedDate="{Binding SelectedDate}"
+                          SelectionMode="MultipleRange"
+                          SelectedDatesChanged="TaskCalendar_SelectedDatesChanged"/>
             </Viewbox>
             <ListView Grid.Row="1" 
                       ItemsSource="{Binding EndTimeTaskModels}"

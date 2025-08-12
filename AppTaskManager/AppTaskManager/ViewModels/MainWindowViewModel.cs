@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using static AppTaskManager.Views.TasksViewMainWindow;
 
 namespace AppTaskManager.ViewModels
 {
@@ -124,13 +125,33 @@ namespace AppTaskManager.ViewModels
             }
         }
 
-        public MainWindowViewModel()
+        public ICodeBehind MainWindowCodeBehind { get; set; }
+
+        public List<DateTime> TasksDates { get; set; }
+
+        private List<DateTime> _selectedDates;
+        public List<DateTime> SelectedDates 
+        { 
+            get => _selectedDates;
+            set
+            {
+                _selectedDates = value;
+                OnPropertyChanged(nameof(SelectedDates));
+            }
+        }
+
+        public MainWindowViewModel(TasksViewMainWindow mainWindow)
         {
             TaskController = new MockTaskController();
             LoadUncompletedTasks();
             CreateDefaultSelectTask();
             TaskImportance = SelectedTask.TaskImportance;
             InitializeEndTimeTask();
+            InitializeDates();
+            SelectedDates = new List<DateTime>();
+
+            MainWindowCodeBehind = mainWindow;
+            MainWindowCodeBehind.SelectManyDates(TasksDates);
         }
 
         private void CreateDefaultSelectTask()
@@ -174,6 +195,37 @@ namespace AppTaskManager.ViewModels
                     task.TaskState = TaskState.Late;
                     task.TaskImportance = TaskImportance.High;
                 }
+            }
+        }
+
+        private void InitializeDates()
+        {
+            TasksDates = new List<DateTime>();
+            foreach (var task in TaskModels)
+            {
+                TasksDates.Add(task.EndTime);
+            }
+        }
+
+        public void LoadTasksSelectedDates(List<DateTime> selectedDates)
+        {
+            if (TaskModels == null)
+            {
+                TaskModels = new ObservableCollection<TaskModel>();
+            }
+            TaskModels.Clear();
+            var tasks = TaskController.GetAllTasks();
+            foreach (var task in tasks)
+            {
+                foreach (var date in selectedDates)
+                {
+                    if (task.EndTime == date) TaskModels.Add(task);
+                }
+            }
+            if(TaskModels.Count == 0)
+            {
+                MessageBox.Show("В заданном диапазоне задачи не найдены");
+                LoadUncompletedTasks();
             }
         }
 
