@@ -18,12 +18,12 @@ namespace AppTaskManager.Controllers
                 Id = 1,
                 Title = "First task",
                 Description = "Description of first task",
-                CreationTime = DateTime.Now,
-                StartTime = DateTime.Now,
-                EndTime = DateTime.Now.AddDays(10),
+                CreationTime = DateTime.Today,
+                StartTime = DateTime.Today,
+                EndTime = DateTime.Today.AddDays(1),
                 IsCompleted = false,
                 TaskState = TaskState.Create,
-                TaskCategory = TaskCategory.Education,
+                TaskCategory = TaskCategory.Work,
                 TaskImportance = TaskImportance.High,
                 TaskChecks = new List<TaskCheck>(),
             };
@@ -49,13 +49,13 @@ namespace AppTaskManager.Controllers
                 Id = 2,
                 Title = "Second task",
                 Description = "Description of second task",
-                CreationTime = DateTime.Now,
-                StartTime = DateTime.Now,
-                EndTime = DateTime.Now.AddDays(15),
+                CreationTime = DateTime.Today,
+                StartTime = DateTime.Today,
+                EndTime = DateTime.Today.AddDays(2),
                 IsCompleted = false,
                 TaskState = TaskState.Create,
                 TaskCategory = TaskCategory.Education,
-                TaskImportance = TaskImportance.High,
+                TaskImportance = TaskImportance.Low,
                 TaskChecks = new List<TaskCheck>(),
             };
             TaskCheck firstTaskCheckForSecondTask = new TaskCheck()
@@ -75,8 +75,104 @@ namespace AppTaskManager.Controllers
             secondTaskModel.TaskChecks.Add(firstTaskCheckForSecondTask);
             secondTaskModel.TaskChecks.Add(secondTaskCheckForSecondTask);
 
+            TaskModel thirdTaskModel = new TaskModel()
+            {
+                Id = 3,
+                Title = "Third task",
+                Description = "Description of third task",
+                CreationTime = DateTime.Today,
+                StartTime = DateTime.Today,
+                EndTime = DateTime.Today.AddDays(3),
+                IsCompleted = false,
+                TaskState = TaskState.Create,
+                TaskCategory = TaskCategory.Home,
+                TaskImportance = TaskImportance.Critical,
+                TaskChecks = new List<TaskCheck>(),
+            };
+            TaskCheck firstTaskCheckForThirdTask = new TaskCheck()
+            {
+                Id = 1,
+                TaskModel = firstTaskModel,
+                Description = "1. Check for third task",
+                IsComplete = false,
+            };
+            TaskCheck secondTaskCheckForThirdTask = new TaskCheck()
+            {
+                Id = 2,
+                TaskModel = firstTaskModel,
+                Description = "2. Check for third task",
+                IsComplete = false,
+            };
+            thirdTaskModel.TaskChecks.Add(firstTaskCheckForThirdTask);
+            thirdTaskModel.TaskChecks.Add(secondTaskCheckForThirdTask);
+
+            TaskModel fourthTaskModel = new TaskModel()
+            {
+                Id = 4,
+                Title = "Fourth task",
+                Description = "Description of fourth task",
+                CreationTime = DateTime.Today,
+                StartTime = DateTime.Today,
+                EndTime = DateTime.Today.AddDays(4),
+                IsCompleted = false,
+                TaskState = TaskState.Create,
+                TaskCategory = TaskCategory.Work,
+                TaskImportance = TaskImportance.Medium,
+                TaskChecks = new List<TaskCheck>(),
+            };
+            TaskCheck firstTaskCheckForFourthTask = new TaskCheck()
+            {
+                Id = 1,
+                TaskModel = firstTaskModel,
+                Description = "1. Check for fourth task",
+                IsComplete = false,
+            };
+            TaskCheck secondTaskCheckForFourthTask = new TaskCheck()
+            {
+                Id = 2,
+                TaskModel = firstTaskModel,
+                Description = "2. Check for fourth task",
+                IsComplete = false,
+            };
+            fourthTaskModel.TaskChecks.Add(firstTaskCheckForFourthTask);
+            fourthTaskModel.TaskChecks.Add(secondTaskCheckForFourthTask);
+
+            TaskModel fifthTaskModel = new TaskModel()
+            {
+                Id = 5,
+                Title = "Fifth task",
+                Description = "Description of fifth task",
+                CreationTime = DateTime.Today,
+                StartTime = DateTime.Today,
+                EndTime = DateTime.Today.AddDays(-1),
+                IsCompleted = false,
+                TaskState = TaskState.Create,
+                TaskCategory = TaskCategory.Work,
+                TaskImportance = TaskImportance.Medium,
+                TaskChecks = new List<TaskCheck>(),
+            };
+            TaskCheck firstTaskCheckForFifthTask = new TaskCheck()
+            {
+                Id = 1,
+                TaskModel = firstTaskModel,
+                Description = "1. Check for fifth task",
+                IsComplete = false,
+            };
+            TaskCheck secondTaskCheckForFifthTask = new TaskCheck()
+            {
+                Id = 2,
+                TaskModel = firstTaskModel,
+                Description = "2. Check for fifth task",
+                IsComplete = false,
+            };
+            fifthTaskModel.TaskChecks.Add(firstTaskCheckForFifthTask);
+            fifthTaskModel.TaskChecks.Add(secondTaskCheckForFifthTask);
+
             _tasks.Add(firstTaskModel);
             _tasks.Add(secondTaskModel);
+            _tasks.Add(thirdTaskModel);
+            _tasks.Add(fourthTaskModel);
+            _tasks.Add(fifthTaskModel);
         }
 
         public void AddTask(TaskModel newTask)
@@ -90,6 +186,7 @@ namespace AppTaskManager.Controllers
 
         public IEnumerable<TaskModel> GetAllTasks()
         {
+            _tasks.Sort((x, y) => x.CompareTo(y));
             return _tasks;
         }
 

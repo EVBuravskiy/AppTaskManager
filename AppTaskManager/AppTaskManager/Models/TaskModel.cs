@@ -7,7 +7,7 @@ using System.Text;
 
 namespace AppTaskManager.Models
 {
-    public class TaskModel
+    public class TaskModel : IComparable
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -26,6 +26,23 @@ namespace AppTaskManager.Models
         public TaskImportance TaskImportance { get; set; }
 
         public List<TaskCheck> TaskChecks { get; set; }
+
+        public int CompareTo(object? obj)
+        {
+            if (obj is TaskModel other) return EndTime.CompareTo(other.EndTime);
+            return 0;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj == null) return false;
+            if (obj is TaskModel other) return EndTime == other.EndTime;
+            return false;
+        }
+        public override int GetHashCode()
+        {
+            return EndTime.GetHashCode();
+        }
     }
 
     public enum TaskState

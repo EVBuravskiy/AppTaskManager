@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace AppTaskManager.ViewModels
 {
@@ -27,7 +28,6 @@ namespace AppTaskManager.ViewModels
                     CreateDefaultSelectTask();
                 }
                 TaskImportance = _selectedTask.TaskImportance;
-                ChecksChecked = 0;
                 foreach (var check in _selectedTask.TaskChecks)
                 {
                     if (check.IsComplete == false)
@@ -37,14 +37,15 @@ namespace AppTaskManager.ViewModels
                     }
                     IsCompleted = true;
                 }
+                CheckCount = _selectedTask.TaskChecks.Count;
+                CheckChecked = 0;
                 foreach (var check in _selectedTask.TaskChecks)
                 {
                     if (check.IsComplete == true)
                     {
-                        ChecksChecked++;
+                        CheckChecked++;
                     }
                 }
-                ChecksCount = _selectedTask.TaskChecks.Count;
                 OnPropertyChanged(nameof(SelectedTask));
             }
         }
@@ -63,6 +64,20 @@ namespace AppTaskManager.ViewModels
         public ITaskController TaskController;
 
         public ObservableCollection<TaskModel> TaskModels { get; private set; }
+
+        public ObservableCollection<TaskModel> EndTimeTaskModels {  get; private set; }
+
+        private DateTime _selectedDate;
+        public DateTime SelectedDate 
+        {
+            get => _selectedDate;
+            set
+            {
+                _selectedDate = value;
+                OnPropertyChanged(nameof(SelectedDate));
+                FindTasksByDate();
+            }
+        }
 
         private string _searchTitle;
         public string SearchTitle
@@ -88,25 +103,24 @@ namespace AppTaskManager.ViewModels
             }
         }
 
-        private int _checksCount;
-        public int ChecksCount
-        {
-            get => _checksCount;
+        private double _checkCount;
+        public double CheckCount {
+            get => _checkCount;
             set
             {
-                _checksCount = value;
-                OnPropertyChanged(nameof(ChecksCount));
+                _checkCount = value;
+                OnPropertyChanged(nameof(CheckCount));
             }
         }
 
-        private int _checksChecked;
-        public int ChecksChecked
+        private double _checkChecked;
+        public double CheckChecked 
         {
-            get => _checksChecked;
+            get => _checkChecked;
             set
             {
-                _checksChecked = value;
-                OnPropertyChanged(nameof(ChecksChecked));
+                _checkChecked = value;
+                OnPropertyChanged(nameof(CheckChecked));
             }
         }
 
@@ -116,6 +130,7 @@ namespace AppTaskManager.ViewModels
             LoadUncompletedTasks();
             CreateDefaultSelectTask();
             TaskImportance = SelectedTask.TaskImportance;
+            InitializeEndTimeTask();
         }
 
         private void CreateDefaultSelectTask()
@@ -125,15 +140,41 @@ namespace AppTaskManager.ViewModels
                 Id = 0,
                 Title = "Наименование задачи",
                 Description = "Описание задачи",
-                CreationTime = DateTime.Now,
-                StartTime = DateTime.Now,
-                EndTime = DateTime.Now,
+                CreationTime = DateTime.Today,
+                StartTime = DateTime.Today,
+                EndTime = DateTime.Today,
                 IsCompleted = false,
                 TaskState = TaskState.Create,
                 TaskCategory = TaskCategory.Work,
                 TaskImportance = TaskImportance.Low,
                 TaskChecks = new List<TaskCheck>()
             };
+        }
+
+        private void InitializeEndTimeTask()
+        {
+            var currentTime = DateTime.Today;
+            if (EndTimeTaskModels == null)
+            {
+                EndTimeTaskModels = new ObservableCollection<TaskModel>();
+            }
+            EndTimeTaskModels.Clear();
+            foreach(var task in TaskModels)
+            {
+                var checkTime = task.EndTime.AddDays(-3);
+                int result1 = DateTime.Compare(currentTime, checkTime);
+                if (result1 >= 0 && (task.TaskState != TaskState.Completed || task.TaskState != TaskState.Deleted))
+                {
+                    EndTimeTaskModels.Add(task);
+                    task.TaskImportance = TaskImportance.High;
+                }
+                int result2 = DateTime.Compare(currentTime, task.EndTime);
+                if (result2 > 0 && (task.TaskState != TaskState.Completed || task.TaskState != TaskState.Deleted))
+                {
+                    task.TaskState = TaskState.Late;
+                    task.TaskImportance = TaskImportance.High;
+                }
+            }
         }
 
         public ICommand ILoadUncompletedTasks => new RelayCommand(all => LoadUncompletedTasks());
@@ -260,11 +301,11 @@ namespace AppTaskManager.ViewModels
             }
         }
 
-
         public void AddTaskToTaskModels(TaskModel newTask)
         {
             TaskController.AddTask(newTask);
             LoadUncompletedTasks();
+            InitializeEndTimeTask();
             if (SelectedTask == null)
             {
                 CreateDefaultSelectTask();
@@ -302,6 +343,23 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        private void FindTasksByDate()
+        {
+            if (TaskModels == null)
+            {
+                TaskModels = new ObservableCollection<TaskModel>();
+            }
+            TaskModels.Clear();
+            var tasks = TaskController.GetAllTasks();
+            foreach (var task in tasks)
+            {
+                if (task.EndTime == SelectedDate)
+                {
+                    TaskModels.Add(task);
+                }
+            }
+        }
+
         public ICommand ISaveChanges => new RelayCommand(update => UpdateTask());
 
         public void UpdateTask()
@@ -310,7 +368,30 @@ namespace AppTaskManager.ViewModels
             {
                 return;
             }
+            if (SelectedTask.StartTime == null)
+            {
+                SelectedTask.StartTime = DateTime.Today;
+            }
+            if (SelectedTask.TaskState == TaskState.Create)
+            {
+                SelectedTask.TaskState = TaskState.InProgress;
+            }
             TaskController.UpdateTask(SelectedTask);
+            CheckChecked = 0;
+            foreach (var check in _selectedTask.TaskChecks)
+            {
+                if (check.IsComplete == true)
+                {
+                    CheckChecked++;
+                }
+            }
+            var currentTaskId = SelectedTask.Id;
+            LoadUncompletedTasks();
+            var currentTask = TaskModels.FirstOrDefault(t => t.Id == currentTaskId);
+            if (currentTask != null)
+            {
+                SelectedTask = currentTask;
+            }
             foreach (TaskCheck check in SelectedTask.TaskChecks)
             {
                 if (check.IsComplete != true)
@@ -343,7 +424,9 @@ namespace AppTaskManager.ViewModels
                 return;
             }
             SelectedTask.StartTime = DateTime.Now;
+            SelectedTask.TaskState = TaskState.InProgress;
             UpdateTask();
+            LoadUncompletedTasks();
         }
 
         public ICommand ICompletedCommand => new RelayCommand(complete => CompleteTask());
@@ -363,8 +446,10 @@ namespace AppTaskManager.ViewModels
                 }
             }
             SelectedTask.IsCompleted = true;
+            SelectedTask.TaskState = TaskState.Completed;
             UpdateTask();
             LoadUncompletedTasks();
+            InitializeEndTimeTask();
             IsCompleted = false;
         }
 

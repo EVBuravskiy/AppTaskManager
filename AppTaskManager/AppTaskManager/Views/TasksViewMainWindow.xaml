@@ -4,10 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AppTaskManager.Views"
-        xmlns:uc="clr-namespace:AppTaskManager.Views.UserControllers" 
+        xmlns:uc="clr-namespace:AppTaskManager.Views.UserControllers" xmlns:viewmodels="clr-namespace:AppTaskManager.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
         mc:Ignorable="d"
         Title="Менеджер задач" Height="800" Width="1400"
-        MinHeight="450" MinWidth="1250"
+        MinHeight="450" MinWidth="1350"
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
@@ -34,7 +34,7 @@
             <ColumnDefinition Width="80" />
             <ColumnDefinition Width="435" />
             <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="255" />
         </Grid.ColumnDefinitions>
 
 
@@ -129,7 +129,7 @@
                       Background="Transparent"
                       Margin="0 20"
                       BorderBrush="Transparent"
-                      HorizontalContentAlignment="Center"
+                      HorizontalContentAlignment="Left"
                       ItemsSource="{Binding TaskModels}"
                       SelectedItem="{Binding SelectedTask}">
                 <ListView.ItemTemplate>
@@ -183,7 +183,7 @@
                            Margin="0 20"/>
                 </ScrollViewer>
                 <!--Due Date-->
-                <TextBlock Text="{Binding SelectedTask.EndTime}"
+                <TextBlock Text="{Binding SelectedTask.EndTime, StringFormat=dd/MM/yyyy}"
                            Background="{StaticResource AccentDark}"
                            Padding="20 3"
                            VerticalAlignment="Center"
@@ -206,6 +206,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
                     </Grid.RowDefinitions>
                 <ListView Grid.Row="0"
                           Background="Transparent"
@@ -223,14 +224,19 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                    <Button Grid.Row="1"  Content="Начать выполнение задачи"
+                    <ProgressBar Grid.Row="1" 
+                                 Margin="10"
+                                 Minimum="0"
+                                 Maximum="{Binding CheckCount}"
+                                 Value="{Binding CheckChecked}"/>
+                    <Button Grid.Row="2"  Content="Начать выполнение задачи"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             FontWeight="DemiBold"
                             Style="{StaticResource TaskBeginButton}"
                             Margin="10 0 10 0"
                             Command="{Binding IBeginTask}"/>
-                    <Button Grid.Row="1"  Content="Подтвердить изменение контроля"
+                    <Button Grid.Row="2"  Content="Подтвердить изменение контроля"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             FontWeight="DemiBold"
@@ -271,13 +277,23 @@
         <!--Task Status-->
         <Grid Grid.Column="3">
             <Grid.RowDefinitions>
-                <RowDefinition Height="230"/>
+                <RowDefinition Height="250"/>
                 <RowDefinition Height="1*"/>
-                <RowDefinition Height="140"/>
+                <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
-            <Calendar Grid.Row="0" HorizontalAlignment="Center" Margin="20" VerticalAlignment="Top" Width="174"/>
-            <ListView Grid.Row="1">
-                <!--Выборка ближайших к исполнению задач-->
+            <Viewbox Grid.Row="0" Stretch="Uniform" StretchDirection="UpOnly">
+                <Calendar HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" SelectedDate="{Binding SelectedDate}"/>
+            </Viewbox>
+            <ListView Grid.Row="1" 
+                      ItemsSource="{Binding EndTimeTaskModels}"
+                      SelectedItem="{Binding SelectedTask}"
+                      BorderThickness="0"
+                      Background="{StaticResource TaskListBackground}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                            <uc:TaskItemSmallView Height="110" Width="240" Background="WhiteSmoke"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
             </ListView>
         </Grid>
     </Grid>

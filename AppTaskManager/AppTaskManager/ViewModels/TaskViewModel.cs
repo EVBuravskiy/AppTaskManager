@@ -120,8 +120,8 @@ namespace AppTaskManager.ViewModels
                 _taskModel = new TaskModel();
                 _taskModel.TaskCategory = TaskCategory.Work;
                 _taskModel.TaskImportance = TaskImportance.Low;
-                _taskModel.CreationTime = DateTime.Now;
-                _taskModel.EndTime = DateTime.Now;
+                _taskModel.CreationTime = DateTime.Today;
+                _taskModel.EndTime = DateTime.Today;
             }
             else
             {
@@ -178,7 +178,8 @@ namespace AppTaskManager.ViewModels
         {
             if (StartTask)
             {
-                TaskModel.StartTime = DateTime.Now;
+                TaskModel.StartTime = DateTime.Today;
+                TaskModel.TaskState = TaskState.InProgress;
             }
             if (IsNew)
             {
@@ -188,9 +189,9 @@ namespace AppTaskManager.ViewModels
                     Id = TaskModel.Id,
                     Title = TaskModel.Title,
                     Description = TaskModel.Description,
-                    CreationTime = TaskModel.CreationTime,
+                    CreationTime = TaskModel.CreationTime.Date,
                     StartTime = TaskModel.StartTime,
-                    EndTime = TaskModel.EndTime,
+                    EndTime = TaskModel.EndTime.Date,
                     IsCompleted = TaskModel.IsCompleted,
                     TaskState = TaskModel.TaskState,
                     TaskCategory = TaskModel.TaskCategory,
@@ -230,6 +231,7 @@ namespace AppTaskManager.ViewModels
         /// </summary>
         private void ClearFields()
         {
+            InitializeTaskModel();
             TaskModel.Title = "";
             TaskModel.Description = "";
             TaskModel.CreationTime= DateTime.Now;
