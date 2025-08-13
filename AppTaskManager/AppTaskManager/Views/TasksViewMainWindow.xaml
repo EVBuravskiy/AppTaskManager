@@ -216,8 +216,7 @@
                           SelectedItem="{Binding SelectedCheck}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                                <CheckBox IsEnabled="{Binding IsComplete, Converter={StaticResource CheckBoxEnabledConverter}}"
-                                          IsChecked="{Binding IsComplete, Mode=TwoWay}"
+                                <CheckBox IsChecked="{Binding IsComplete, Mode=TwoWay}"
                                           Content="{Binding Description}"
                                           Margin="5"
                                           FontSize="14"/>
@@ -242,7 +241,7 @@
                             FontWeight="DemiBold"
                             Style="{StaticResource TaskViewCompleteButton}"
                             Margin="0 0 10 0"
-                            Command="{Binding ISaveChanges}"/>
+                            Command="{Binding ICheckChecksComplete}"/>
                 </Grid>
             </Grid>
             <!--Task View Buttons-->

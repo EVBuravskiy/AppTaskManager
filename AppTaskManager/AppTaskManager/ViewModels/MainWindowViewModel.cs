@@ -240,7 +240,7 @@ namespace AppTaskManager.ViewModels
             var tasks = TaskController.GetAllTasks();
             foreach (var task in tasks)
             {
-                if (!task.IsCompleted)
+                if (task.TaskState != TaskState.Completed && task.TaskState != TaskState.Deleted)
                 {
                     TaskModels.Add(task);
                 }
@@ -412,6 +412,20 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        public ICommand IBeginTask => new RelayCommand(begin => BeginTask());
+        private void BeginTask()
+        {
+            if (SelectedTask.Id == 0)
+            {
+                return;
+            }
+            SelectedTask.StartTime = DateTime.Now;
+            SelectedTask.TaskState = TaskState.InProgress;
+            UpdateTask();
+            GetCurrentTaskById(SelectedTask.Id);
+        }
+
+
         public ICommand ISaveChanges => new RelayCommand(update => UpdateTask());
 
         public void UpdateTask()
@@ -429,6 +443,47 @@ namespace AppTaskManager.ViewModels
                 SelectedTask.TaskState = TaskState.InProgress;
             }
             TaskController.UpdateTask(SelectedTask);
+            GetCurrentTaskById(SelectedTask.Id);
+        }
+
+        private void GetCurrentTaskById(int currentTaskId)
+        {
+            if (TaskModels.Count == 0)
+            {
+                LoadAllTasks();
+            }
+            var currentTask = TaskModels.FirstOrDefault(t => t.Id == currentTaskId);
+            if (currentTask != null)
+            {
+                SelectedTask = currentTask;
+            }
+            else
+            {
+                CreateDefaultSelectTask();
+            }
+        }
+
+        public ICommand ICheckChecksComplete => new RelayCommand(checks => CheckChecksComplete());
+        public void CheckChecksComplete()
+        {
+            if (SelectedTask.TaskState != TaskState.InProgress)
+            {
+                SelectedTask.TaskState = TaskState.InProgress;
+            }
+            if (SelectedTask.TaskChecks.Count > 0)
+            {
+                foreach (TaskCheck check in SelectedTask.TaskChecks)
+                {
+                    if (check.IsComplete != true)
+                    {
+                        IsCompleted = false;
+                        break;
+                    }
+                    SelectedTask.TaskState = TaskState.Completed;
+                    IsCompleted = true;
+                }
+            }
+            UpdateTask();
             CheckChecked = 0;
             foreach (var check in _selectedTask.TaskChecks)
             {
@@ -437,21 +492,9 @@ namespace AppTaskManager.ViewModels
                     CheckChecked++;
                 }
             }
-            var currentTaskId = SelectedTask.Id;
-            LoadUncompletedTasks();
-            var currentTask = TaskModels.FirstOrDefault(t => t.Id == currentTaskId);
-            if (currentTask != null)
+            if (!IsCompleted)
             {
-                SelectedTask = currentTask;
-            }
-            foreach (TaskCheck check in SelectedTask.TaskChecks)
-            {
-                if (check.IsComplete != true)
-                {
-                    IsCompleted = false;
-                    break;
-                }
-                IsCompleted = true;
+                LoadUncompletedTasks();
             }
         }
 
@@ -466,19 +509,6 @@ namespace AppTaskManager.ViewModels
             }
             NewTaskWindow newTaskWindow = new NewTaskWindow(this, isNew);
             newTaskWindow.Show();
-        }
-
-        public ICommand IBeginTask => new RelayCommand(begin => BeginTask());
-        private void BeginTask()
-        {
-            if (SelectedTask.Id == 0)
-            {
-                return;
-            }
-            SelectedTask.StartTime = DateTime.Now;
-            SelectedTask.TaskState = TaskState.InProgress;
-            UpdateTask();
-            LoadUncompletedTasks();
         }
 
         public ICommand ICompletedCommand => new RelayCommand(complete => CompleteTask());
@@ -503,6 +533,10 @@ namespace AppTaskManager.ViewModels
             LoadUncompletedTasks();
             InitializeEndTimeTask();
             IsCompleted = false;
+            if (TaskModels.Count > 0)
+            {
+                SelectedTask = TaskModels[0];
+            }
         }
 
         public ICommand DeleteTaskCommand => new RelayCommand(delete => DeleteTask());
@@ -512,11 +546,23 @@ namespace AppTaskManager.ViewModels
         /// </summary>
         private void DeleteTask()
         {
-            TaskController.DeleteTask(SelectedTask);
-            MessageBox.Show("Удаление задачи успешно завершено");
-            CreateDefaultSelectTask();
-            TaskImportance = SelectedTask.TaskImportance;
+            //TaskController.DeleteTask(SelectedTask);
+            //MessageBox.Show("Удаление задачи успешно завершено");
+            //CreateDefaultSelectTask();
+            //TaskImportance = SelectedTask.TaskImportance;
+            //LoadUncompletedTasks();
+            SelectedTask.TaskState = TaskState.Deleted;
+            UpdateTask();
             LoadUncompletedTasks();
+            InitializeEndTimeTask();
+            if (TaskModels.Count > 0)
+            {
+                SelectedTask = TaskModels[0];
+            }
+            else
+            {
+                CreateDefaultSelectTask();
+            }
         }
     }
 }
