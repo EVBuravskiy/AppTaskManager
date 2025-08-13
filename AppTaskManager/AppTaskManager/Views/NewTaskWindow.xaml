@@ -76,7 +76,10 @@
                      Style="{StaticResource TaskTitleBox}"
                      BorderBrush="{StaticResource Borders}"
                      FontSize="14"
-                     Text="{Binding TaskModel.Title}"/>
+                     Text="{Binding TaskTitle}"
+                     Background="{Binding BackgroundTitle}"
+                     ToolTip="{Binding TaskTitleMessage}"
+                     SpellCheck.IsEnabled="True"/>
             <Label IsHitTestVisible="False" 
                    Grid.Column="0"
                    Foreground="{StaticResource PlaceholderText}"
@@ -110,10 +113,13 @@
             </Grid.Triggers>
             <!--Task Description Box-->
             <TextBox x:Name="TaskDesc"
-                 Style="{StaticResource TaskDecrBox}"
-                 VerticalContentAlignment="Top"
-                 HorizontalContentAlignment="Left"
-                 Text="{Binding TaskModel.Description}"/>
+                     Style="{StaticResource TaskDecrBox}"
+                     VerticalContentAlignment="Top"
+                     HorizontalContentAlignment="Left"
+                     Text="{Binding TaskDescription}"
+                     Background="{Binding BackgroundDescription}"
+                     ToolTip="{Binding TaskDescriptionMessage}"
+                     SpellCheck.IsEnabled="True"/>
             <Label IsHitTestVisible="False" 
                Foreground="{StaticResource PlaceholderText}"
                Content="Введите описание задачи..."
@@ -130,11 +136,13 @@
                  BorderBrush="{StaticResource Borders}"
                  Margin="20 10 80 10"
                  FontSize="12"
-                 Text="{Binding CheckDescription}"/>
+                 Text="{Binding CheckDescription}"
+                 ToolTip="{Binding TaskChecksMessage}"
+                 SpellCheck.IsEnabled="True" Cursor=""/>
         <Label IsHitTestVisible="False" 
                Grid.Row="2" 
                Foreground="{StaticResource PlaceholderText}"
-               Content="Введите название точки контроля выполнения задачи..."
+               Content="Введите название контроля проверки выполнения задачи..."
                FontSize="14"
                VerticalAlignment="Center"
                Visibility="{Binding Text.IsEmpty, ElementName=TaskCheckBox, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -206,13 +214,14 @@
                     VerticalAlignment="Center"/>
             <DatePicker Margin="0 0 20 0" 
                         Width="150"
-                        SelectedDate="{Binding TaskModel.EndTime}"/>
+                        SelectedDate="{Binding TaskModel.EndTime}"
+                        BorderThickness="1"
+                        BorderBrush="{Binding BorderDatePicker}"/>
         </StackPanel>
 
         <!--Seventh row-->
         <Grid Grid.Row="6">
             <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
@@ -221,18 +230,10 @@
                         Margin="20 0">
                 <CheckBox VerticalAlignment="Center" IsChecked="{Binding StartTask}"/>
                 <Label VerticalAlignment="Center" 
-                       Content="Незамедлительно начать выполнение задачи"
+                       Content="Начать выполнение задачи"
                        Margin="20 0"></Label>
             </StackPanel>
-            <StackPanel Grid.Row="1"
-                        Orientation="Horizontal"
-                        Margin="20 0">
-                <CheckBox VerticalAlignment="Center"></CheckBox>
-                <Label VerticalAlignment="Center" 
-                       Content="Добавить задачу в календарь"
-                       Margin="20 0"></Label>
-            </StackPanel>
-            <Button Grid.Row="2"
+            <Button Grid.Row="1"
                     Content="Отмена"
                     HorizontalContentAlignment="Center"
                     HorizontalAlignment="Left"

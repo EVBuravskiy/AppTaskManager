@@ -5,11 +5,14 @@ using AppTaskManager.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
 namespace AppTaskManager.ViewModels
@@ -36,17 +39,8 @@ namespace AppTaskManager.ViewModels
             }
         }
 
-        /// <summary>
-        /// Array of task categories for combobox
-        /// </summary>
-        //public Array TaskCategories => Enum.GetValues(typeof(TaskCategory));
         public List<string> TaskCategories { get; set; }
         public string InputCategory { get; set; }
-
-        /// <summary>
-        /// Array of task categories for combobox
-        /// </summary>
-        //public Array TaskImportancies => Enum.GetValues(typeof(TaskImportance));
 
         public List<string> TaskImportancies { get; set; }
         public string InputImportance { get; set; }
@@ -56,10 +50,53 @@ namespace AppTaskManager.ViewModels
         /// </summary>
         public TaskCheck SelectedCheck { get; set; }
 
+        public string TaskChecksMessage { get; set; } = "Введите название контроля проверки выполнения задачи...";
+
+        public SolidColorBrush BackgroundCheckDescription { get; set; } = new SolidColorBrush(Colors.WhiteSmoke);
+
+        private int checkId => TaskCheckList.Count + 1;
+
+        private string _checkDescription;
         /// <summary>
         /// Public property for control check description
         /// </summary>
-        public string CheckDescription { get; set; }
+        public string CheckDescription 
+        {
+            get => _checkDescription;
+            set
+            {
+                _checkDescription = Validate.TrimInputString(value);
+                if (!Validate.ValidateString(value, 3))
+                {
+                    BackgroundCheckDescription = Brushes.LightCoral;
+                    OnPropertyChanged(nameof(BackgroundCheckDescription));
+                    TaskChecksMessage = "Проверьте введенное название контроля";
+                    OnPropertyChanged(nameof(TaskChecksMessage));
+                }
+                else
+                {
+                    _checkDescription = $"{checkId}. {_checkDescription}";
+                    IsEnabledAddControlCheck = true;
+                    BackgroundCheckDescription = Brushes.WhiteSmoke;
+                    OnPropertyChanged(nameof(BackgroundCheckDescription));
+                    TaskTitleMessage = "Контроль введен";
+                    OnPropertyChanged(nameof(TaskChecksMessage));
+                }
+                OnPropertyChanged(nameof(CheckDescription));
+            }
+        }
+
+        private bool _isEnabledAddControlCheck = false;
+
+        public bool IsEnabledAddControlCheck 
+        {
+            get => _isEnabledAddControlCheck;
+            set
+            {
+                _isEnabledAddControlCheck = value;
+                OnPropertyChanged(nameof(IsEnabledAddControlCheck));
+            }
+        }
 
         /// <summary>
         /// Public property holding the observable collection of check list
@@ -70,6 +107,73 @@ namespace AppTaskManager.ViewModels
 
         public bool StartTask { get; set; }
 
+        public SolidColorBrush BackgroundTitle { get; set; } = new SolidColorBrush(Colors.WhiteSmoke);
+
+        public string TaskTitleMessage { get; set; } = "Введите наименование задачи...";
+
+        private bool TaskHaveTitle = false;
+
+        private string _taskTitle;
+        public string TaskTitle 
+        {
+            get => _taskTitle;
+            set
+            {
+                _taskTitle = Validate.TrimInputString(value);
+                if (!Validate.ValidateString(value, 3))
+                {
+                    BackgroundTitle = Brushes.LightCoral;
+                    OnPropertyChanged(nameof(BackgroundTitle));
+                    TaskTitleMessage = "Проверьте наименование задачи";
+                    OnPropertyChanged(nameof(TaskTitleMessage));
+                }
+                else
+                {
+                    BackgroundTitle = Brushes.WhiteSmoke;
+                    OnPropertyChanged(nameof(BackgroundTitle));
+                    TaskTitleMessage = "Наименование задачи введено";
+                    OnPropertyChanged(nameof(TaskTitleMessage));
+                    TaskHaveTitle = true;
+                }
+                OnPropertyChanged(nameof(TaskTitle));
+            }
+        }
+
+        public SolidColorBrush BackgroundDescription { get; set; } = new SolidColorBrush(Colors.WhiteSmoke);
+
+        public string TaskDescriptionMessage { get; set; } = "Введите описание задачи...";
+
+        private bool TaskHaveDescription = false;
+
+        private string _taskDescription;
+
+        public string TaskDescription 
+        {
+            get => _taskDescription;
+            set
+            {
+                _taskDescription = Validate.TrimInputString(value);
+                if (!Validate.ValidateString(value, 10))
+                {
+                    BackgroundDescription = Brushes.LightCoral;
+                    OnPropertyChanged(nameof(BackgroundDescription));
+                    TaskDescriptionMessage = "Проверьте корректность описания задачи";
+                    OnPropertyChanged(nameof(TaskDescriptionMessage));
+                }
+                else
+                {
+                    BackgroundDescription = Brushes.WhiteSmoke;
+                    OnPropertyChanged(nameof(BackgroundDescription));
+                    TaskDescriptionMessage = "Описание задачи введено";
+                    OnPropertyChanged(nameof(TaskDescriptionMessage));
+                    TaskHaveDescription = true;
+                }
+                OnPropertyChanged(nameof(TaskDescription));
+            }
+        }
+
+        public SolidColorBrush BorderDatePicker { get; set; } = new SolidColorBrush(Colors.WhiteSmoke);
+
         /// <summary>
         /// Constructor for the TaskViewModel. 
         /// It get TaskController, load all tasks, initialize instance of the TaskModel class, and clear TaskCheckList
@@ -79,7 +183,7 @@ namespace AppTaskManager.ViewModels
         {
             IsNew = isNew;
             _MainWindowViewModel = mainViewModel;
-            //Intialize instance of the TaskModel class
+            //Initialize instance of the TaskModel class
             InitializeTaskModel();
             InitializeListCategories();
         }
@@ -126,6 +230,8 @@ namespace AppTaskManager.ViewModels
             else
             {
                 _taskModel = _MainWindowViewModel.SelectedTask;
+                TaskTitle = _taskModel.Title;
+                TaskDescription = _taskModel.Description;
                 foreach (TaskCheck check in _MainWindowViewModel.SelectedTask.TaskChecks)
                 {
                     TaskCheckList.Add(check);
@@ -143,13 +249,23 @@ namespace AppTaskManager.ViewModels
         /// </summary>
         public void AddControlCheck()
         {
-            TaskCheck taskCheck = new TaskCheck();
-            taskCheck.Description = CheckDescription;
-            taskCheck.IsComplete = false;
-            TaskCheckList.Add(taskCheck);
-            TaskModel.TaskChecks = TaskCheckList.ToList();
-            CheckDescription = "";
-            OnPropertyChanged(CheckDescription);
+            if (IsEnabledAddControlCheck)
+            {
+                TaskCheck taskCheck = new TaskCheck();
+                taskCheck.Description = CheckDescription;
+                taskCheck.IsComplete = false;
+                TaskCheckList.Add(taskCheck);
+                TaskModel.TaskChecks = TaskCheckList.ToList();
+                CheckDescription = "";
+                OnPropertyChanged(CheckDescription);
+                IsEnabledAddControlCheck = false;
+            }
+            else
+            {
+                BackgroundCheckDescription = Brushes.LightCoral;
+                OnPropertyChanged(nameof(BackgroundCheckDescription));
+                MessageBox.Show("Проверьте корректность введения контроля проверки выполнения задачи");
+            }
         }
 
         /// <summary>
@@ -176,6 +292,40 @@ namespace AppTaskManager.ViewModels
         /// </summary>
         public void AddNewTask()
         {
+            if(TaskModel.EndTime <= DateTime.Now)
+            {
+                BorderDatePicker = new SolidColorBrush(Colors.Red);
+                MessageBox.Show("Дата окончания задачи не ранее текущей даты или текущей датой");
+                OnPropertyChanged(nameof(BorderDatePicker));
+                return;
+            }
+
+            if (!TaskHaveTitle)
+            {
+                MessageBox.Show("Отсутствует наименование задачи");
+                return;
+            }
+            else
+            {
+                TaskModel.Title = TaskTitle;
+            }
+
+            if (!TaskHaveDescription)
+            {
+                MessageBox.Show("Отсутствует описание задачи");
+                return;
+            }
+            else
+            {
+                TaskModel.Description = TaskDescription;
+            }
+
+            if (TaskCheckList.Count == 0)
+            {
+                MessageBox.Show("Не введен контроль выполнения задачи");
+                return;
+            }
+
             if (StartTask)
             {
                 TaskModel.StartTime = DateTime.Today;
@@ -232,13 +382,26 @@ namespace AppTaskManager.ViewModels
         private void ClearFields()
         {
             InitializeTaskModel();
-            TaskModel.Title = "";
-            TaskModel.Description = "";
+            TaskTitle = "";
+            OnPropertyChanged(nameof(TaskTitle));
+            TaskModel.Title = TaskTitle;
+            TaskDescription = "";
+            OnPropertyChanged(nameof(TaskDescription));
+            TaskModel.Description = TaskDescription;
             TaskModel.CreationTime= DateTime.Now;
             TaskModel.TaskCategory = TaskCategory.Work;
             TaskModel.TaskImportance = TaskImportance.Low;
             TaskCheckList.Clear();
             TaskModel.TaskChecks = TaskCheckList.ToList();
+            BorderDatePicker = new SolidColorBrush(Colors.WhiteSmoke);
+            BackgroundTitle = Brushes.WhiteSmoke;
+            OnPropertyChanged(nameof(BackgroundTitle));
+            TaskTitleMessage = "Введите наименование задачи...";
+            BackgroundDescription = Brushes.WhiteSmoke;
+            OnPropertyChanged(nameof(BackgroundDescription));
+            TaskDescriptionMessage = "Введите описание задачи...";
+            BorderDatePicker = new SolidColorBrush(Colors.WhiteSmoke);
+            OnPropertyChanged(nameof(BorderDatePicker));
             OnPropertyChanged(nameof(TaskModel));
             OnPropertyChanged(nameof(TaskCheckList));
         }
