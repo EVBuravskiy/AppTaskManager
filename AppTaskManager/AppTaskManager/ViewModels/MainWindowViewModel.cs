@@ -353,6 +353,82 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        public ICommand ILoadDeletedTasks => new RelayCommand(deleted => LoadDeletedTasks());
+
+        private void LoadDeletedTasks()
+        {
+            if (TaskModels == null)
+            {
+                TaskModels = new ObservableCollection<TaskModel>();
+            }
+            TaskModels.Clear();
+            var tasks = TaskController.GetAllTasks();
+            foreach (var task in tasks)
+            {
+                if (task.TaskState == TaskState.Deleted)
+                {
+                    TaskModels.Add(task);
+                }
+            }
+        }
+
+        public ICommand ILoadHomeTasks => new RelayCommand(deleted => LoadHomeTasks());
+
+        private void LoadHomeTasks()
+        {
+            if (TaskModels == null)
+            {
+                TaskModels = new ObservableCollection<TaskModel>();
+            }
+            TaskModels.Clear();
+            var tasks = TaskController.GetAllTasks();
+            foreach (var task in tasks)
+            {
+                if (task.TaskCategory == TaskCategory.Home)
+                {
+                    TaskModels.Add(task);
+                }
+            }
+        }
+
+        public ICommand ILoadWorkTasks => new RelayCommand(deleted => LoadWorkTasks());
+
+        private void LoadWorkTasks()
+        {
+            if (TaskModels == null)
+            {
+                TaskModels = new ObservableCollection<TaskModel>();
+            }
+            TaskModels.Clear();
+            var tasks = TaskController.GetAllTasks();
+            foreach (var task in tasks)
+            {
+                if (task.TaskCategory == TaskCategory.Work)
+                {
+                    TaskModels.Add(task);
+                }
+            }
+        }
+
+        public ICommand ILoadEducationTasks => new RelayCommand(deleted => LoadEducationTasks());
+
+        private void LoadEducationTasks()
+        {
+            if (TaskModels == null)
+            {
+                TaskModels = new ObservableCollection<TaskModel>();
+            }
+            TaskModels.Clear();
+            var tasks = TaskController.GetAllTasks();
+            foreach (var task in tasks)
+            {
+                if (task.TaskCategory == TaskCategory.Education)
+                {
+                    TaskModels.Add(task);
+                }
+            }
+        }
+
         public void AddTaskToTaskModels(TaskModel newTask)
         {
             TaskController.AddTask(newTask);
@@ -477,9 +553,12 @@ namespace AppTaskManager.ViewModels
                     if (check.IsComplete != true)
                     {
                         IsCompleted = false;
+                        SelectedTask.TaskState = TaskState.InProgress;
+                        SelectedTask.IsCompleted = false;
                         break;
                     }
                     SelectedTask.TaskState = TaskState.Completed;
+                    SelectedTask.IsCompleted = true;
                     IsCompleted = true;
                 }
             }
@@ -495,6 +574,7 @@ namespace AppTaskManager.ViewModels
             if (!IsCompleted)
             {
                 LoadUncompletedTasks();
+                InitializeEndTimeTask();
             }
         }
 

@@ -229,12 +229,36 @@ namespace AppTaskManager.ViewModels
             }
             else
             {
-                _taskModel = _MainWindowViewModel.SelectedTask;
-                TaskTitle = _taskModel.Title;
-                TaskDescription = _taskModel.Description;
-                foreach (TaskCheck check in _MainWindowViewModel.SelectedTask.TaskChecks)
+                if (_MainWindowViewModel.SelectedTask.TaskState == TaskState.Deleted || _MainWindowViewModel.SelectedTask.TaskState == TaskState.Completed)
                 {
-                    TaskCheckList.Add(check);
+                    _taskModel = new TaskModel();
+                    _taskModel.Title = _MainWindowViewModel.SelectedTask.Title;
+                    _taskModel.Description = _MainWindowViewModel.SelectedTask.Description;
+                    _taskModel.TaskCategory = _MainWindowViewModel.SelectedTask.TaskCategory;
+                    _taskModel.TaskImportance = _MainWindowViewModel.SelectedTask.TaskImportance;
+                    _taskModel.CreationTime = DateTime.Today;
+                    _taskModel.EndTime = DateTime.Today;
+                    foreach (TaskCheck check in _MainWindowViewModel.SelectedTask.TaskChecks)
+                    {
+                        TaskCheckList.Add(new TaskCheck() 
+                        { 
+                            Description = check.Description, 
+                            IsComplete = false}
+                        );
+                    }
+                    TaskTitle = _taskModel.Title;
+                    TaskDescription = _taskModel.Description;
+                    IsNew = true;
+                }
+                else
+                {
+                    _taskModel = _MainWindowViewModel.SelectedTask;
+                    TaskTitle = _taskModel.Title;
+                    TaskDescription = _taskModel.Description;
+                    foreach (TaskCheck check in _MainWindowViewModel.SelectedTask.TaskChecks)
+                    {
+                        TaskCheckList.Add(check);
+                    }
                 }
             }
         }
