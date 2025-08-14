@@ -144,7 +144,6 @@ namespace AppTaskManager.ViewModels
         {
             TaskController = new MockTaskController();
             LoadUncompletedTasks();
-            CreateDefaultSelectTask();
             TaskImportance = SelectedTask.TaskImportance;
             InitializeEndTimeTask();
             InitializeDates();
@@ -245,6 +244,14 @@ namespace AppTaskManager.ViewModels
                     TaskModels.Add(task);
                 }
             }
+            if (TaskModels.Count > 0)
+            {
+                if (SelectedTask == null || SelectedTask.Id == 0)
+                {
+                    SelectedTask = TaskModels.First();
+                }
+            }
+            else if(SelectedTask.Id != 0) CreateDefaultSelectTask();
         }
 
         public ICommand ILoadAllTasks => new RelayCommand(all => LoadAllTasks());
@@ -260,6 +267,14 @@ namespace AppTaskManager.ViewModels
             {
                 TaskModels.Add(task);
             }
+            if (TaskModels.Count > 0)
+            {
+                if (SelectedTask == null || SelectedTask.Id == 0)
+                {
+                    SelectedTask = TaskModels.First();
+                }
+            }
+            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
         }
 
         public ICommand ILoadCriticalTasks => new RelayCommand(critical => LoadCriticalTasks());
@@ -278,6 +293,14 @@ namespace AppTaskManager.ViewModels
                     TaskModels.Add(task);
                 }
             }
+            if (TaskModels.Count > 0)
+            {
+                if (SelectedTask == null || SelectedTask.Id == 0)
+                {
+                    SelectedTask = TaskModels.First();
+                }
+            }
+            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
         }
 
         public ICommand ILoadHighTasks => new RelayCommand(high => LoadHighTasks());
@@ -296,6 +319,14 @@ namespace AppTaskManager.ViewModels
                     TaskModels.Add(task);
                 }
             }
+            if (TaskModels.Count > 0)
+            {
+                if (SelectedTask == null || SelectedTask.Id == 0)
+                {
+                    SelectedTask = TaskModels.First();
+                }
+            }
+            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
         }
 
         public ICommand ILoadMediumTasks => new RelayCommand(medium => LoadMediumTasks());
@@ -314,6 +345,14 @@ namespace AppTaskManager.ViewModels
                     TaskModels.Add(task);
                 }
             }
+            if (TaskModels.Count > 0)
+            {
+                if (SelectedTask == null || SelectedTask.Id == 0)
+                {
+                    SelectedTask = TaskModels.First();
+                }
+            }
+            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
         }
 
         public ICommand ILoadLowTasks => new RelayCommand(low => LoadLowTasks());
@@ -332,6 +371,14 @@ namespace AppTaskManager.ViewModels
                     TaskModels.Add(task);
                 }
             }
+            if (TaskModels.Count > 0)
+            {
+                if (SelectedTask == null || SelectedTask.Id == 0)
+                {
+                    SelectedTask = TaskModels.First();
+                }
+            }
+            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
         }
 
         public ICommand ILoadCompletedTasks => new RelayCommand(completed => LoadCompletedTasks());
@@ -351,6 +398,14 @@ namespace AppTaskManager.ViewModels
                     TaskModels.Add(task);
                 }
             }
+            if (TaskModels.Count > 0)
+            {
+                if (SelectedTask == null || SelectedTask.Id == 0)
+                {
+                    SelectedTask = TaskModels.First();
+                }
+            }
+            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
         }
 
         public ICommand ILoadDeletedTasks => new RelayCommand(deleted => LoadDeletedTasks());
@@ -370,6 +425,14 @@ namespace AppTaskManager.ViewModels
                     TaskModels.Add(task);
                 }
             }
+            if (TaskModels.Count > 0)
+            {
+                if (SelectedTask == null || SelectedTask.Id == 0)
+                {
+                    SelectedTask = TaskModels.First();
+                }
+            }
+            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
         }
 
         public ICommand ILoadHomeTasks => new RelayCommand(deleted => LoadHomeTasks());
@@ -389,6 +452,14 @@ namespace AppTaskManager.ViewModels
                     TaskModels.Add(task);
                 }
             }
+            if (TaskModels.Count > 0)
+            {
+                if (SelectedTask == null || SelectedTask.Id == 0)
+                {
+                    SelectedTask = TaskModels.First();
+                }
+            }
+            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
         }
 
         public ICommand ILoadWorkTasks => new RelayCommand(deleted => LoadWorkTasks());
@@ -408,6 +479,14 @@ namespace AppTaskManager.ViewModels
                     TaskModels.Add(task);
                 }
             }
+            if (TaskModels.Count > 0)
+            {
+                if (SelectedTask == null || SelectedTask.Id == 0)
+                {
+                    SelectedTask = TaskModels.First();
+                }
+            }
+            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
         }
 
         public ICommand ILoadEducationTasks => new RelayCommand(deleted => LoadEducationTasks());
@@ -427,6 +506,14 @@ namespace AppTaskManager.ViewModels
                     TaskModels.Add(task);
                 }
             }
+            if (TaskModels.Count > 0)
+            {
+                if (SelectedTask == null || SelectedTask.Id == 0)
+                {
+                    SelectedTask = TaskModels.First();
+                }
+            }
+            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
         }
 
         public void AddTaskToTaskModels(TaskModel newTask)
