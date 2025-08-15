@@ -1,16 +1,20 @@
 ﻿using AppTaskManager.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AppTaskManager.Controllers
 {
+    /// <summary>
+    /// Mock task controller
+    /// </summary>
     public class MockTaskController : ITaskController
     {
+        /// <summary>
+        /// Collection of tasks
+        /// </summary>
         private List<TaskModel> _tasks = new List<TaskModel>();
 
+        /// <summary>
+        /// Mock controller constructor with initialize collection of tasks
+        /// </summary>
         public MockTaskController() 
         {
             TaskModel firstTaskModel = new TaskModel()
@@ -175,6 +179,10 @@ namespace AppTaskManager.Controllers
             _tasks.Add(fifthTaskModel);
         }
 
+        /// <summary>
+        /// Add task: this method for add new task to collection
+        /// </summary>
+        /// <param name="newTask"></param>
         public void AddTask(TaskModel newTask)
         {
             if (_tasks == null)
@@ -184,12 +192,20 @@ namespace AppTaskManager.Controllers
             _tasks.Add(newTask);
         }
 
+        /// <summary>
+        /// Get all task: this method for get and sort all tasks from collection
+        /// </summary>
+        /// <returns>Collection of tasks</returns>
         public IEnumerable<TaskModel> GetAllTasks()
         {
             _tasks.Sort((x, y) => x.CompareTo(y));
             return _tasks;
         }
 
+        /// <summary>
+        /// Save tasks: this method for saving tasks into collection
+        /// </summary>
+        /// <param name="tasks"></param>
         public void SaveTasks(IEnumerable<TaskModel> tasks)
         {
             _tasks.Clear();
@@ -199,25 +215,47 @@ namespace AppTaskManager.Controllers
             }
         }
 
+        /// <summary>
+        /// Update task: this method update task in collection
+        /// </summary>
+        /// <param name="task"></param>
         public void UpdateTask(TaskModel updatedTask)
         {
             if (updatedTask == null)
             {
                 return;
             }
-            TaskModel task = _tasks.FirstOrDefault(t => t.Id == updatedTask.Id);
-            if (task == null)
+            TaskModel taskModel = _tasks.FirstOrDefault(t => t.Id == updatedTask.Id);
+            if (taskModel == null)
             {
                 _tasks.Add(updatedTask);
             }
             else
             {
                 {
-                    task = updatedTask;
+                    taskModel.Id = updatedTask.Id;
+                    taskModel.Title = updatedTask.Title;
+                    taskModel.Description = updatedTask.Description;
+                    taskModel.CreationTime = updatedTask.CreationTime;
+                    taskModel.StartTime = updatedTask.StartTime;
+                    taskModel.EndTime = updatedTask.EndTime;
+                    taskModel.IsCompleted = updatedTask.IsCompleted;
+                    taskModel.TaskState = updatedTask.TaskState;
+                    taskModel.TaskCategory = updatedTask.TaskCategory;
+                    taskModel.TaskImportance = updatedTask.TaskImportance;
+                    taskModel.TaskChecks.Clear();
+                    foreach(TaskCheck check in updatedTask.TaskChecks)
+                    {
+                        taskModel.TaskChecks.Add(check);
+                    }
                 }
             }
         }
 
+        /// <summary>
+        /// Delete task: this method delete task from collection
+        /// </summary>
+        /// <param name="task"></param>
         public void DeleteTask(TaskModel deletedTask)
         {
             if(deletedTask == null)
@@ -236,7 +274,7 @@ namespace AppTaskManager.Controllers
         }
 
         /// <summary>
-        /// Generate new task id: This method generate new id for new task
+        /// Generate new task id: this method generate new id for new task
         /// </summary>
         /// <returns>new id</returns>
         public int GenerateNewTaskId()

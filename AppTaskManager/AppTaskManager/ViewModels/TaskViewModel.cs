@@ -1,24 +1,20 @@
-﻿using AppTaskManager.Controllers;
-using AppTaskManager.Models;
+﻿using AppTaskManager.Models;
 using AppTaskManager.Utilities;
-using AppTaskManager.Views;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Media3D;
 
 namespace AppTaskManager.ViewModels
 {
+    /// <summary>
+    /// Task Edit Window View Model
+    /// </summary>
     public class TaskViewModel : BaseObservableClass
     {
+        /// <summary>
+        /// private field holding Main Window View Model
+        /// </summary>
         private MainWindowViewModel _MainWindowViewModel;
 
         /// <summary>
@@ -39,10 +35,24 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Public property for collection of task categories
+        /// </summary>
         public List<string> TaskCategories { get; set; }
+
+        /// <summary>
+        /// Public field holding the category of the input task
+        /// </summary>
         public string InputCategory { get; set; }
 
+        /// <summary>
+        /// Public property for collection of task importance for convert enums
+        /// </summary>
         public List<string> TaskImportancies { get; set; }
+
+        /// <summary>
+        /// Public field holding the importance of the input task
+        /// </summary>
         public string InputImportance { get; set; }
 
         /// <summary>
@@ -50,13 +60,26 @@ namespace AppTaskManager.ViewModels
         /// </summary>
         public TaskCheck SelectedCheck { get; set; }
 
+        /// <summary>
+        /// Public field holding task message for message box
+        /// </summary>
         public string TaskChecksMessage { get; set; } = "Введите название контроля проверки выполнения задачи...";
 
+        /// <summary>
+        /// Public field holding the background color the task description
+        /// </summary>
         public SolidColorBrush BackgroundCheckDescription { get; set; } = new SolidColorBrush(Colors.WhiteSmoke);
 
+        /// <summary>
+        /// Private field holding id for check
+        /// </summary>
         private int checkId => TaskCheckList.Count + 1;
 
+        /// <summary>
+        /// Private field holding check description
+        /// </summary>
         private string _checkDescription;
+
         /// <summary>
         /// Public property for control check description
         /// </summary>
@@ -86,8 +109,14 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Private field holding enable state of check adding
+        /// </summary>
         private bool _isEnabledAddControlCheck = false;
 
+        /// <summary>
+        /// Property for the field holding enable state of check adding
+        /// </summary>
         public bool IsEnabledAddControlCheck 
         {
             get => _isEnabledAddControlCheck;
@@ -103,17 +132,39 @@ namespace AppTaskManager.ViewModels
         /// </summary>
         public ObservableCollection<TaskCheck> TaskCheckList {  get; set; }
 
+        /// <summary>
+        /// Private field holding the state of a new task.
+        /// </summary>
         private bool IsNew { get; set; }
 
+        /// <summary>
+        /// Public field holding start of task.
+        /// </summary>
         public bool StartTask { get; set; }
 
+        /// <summary>
+        /// Public field holding the background color the task title
+        /// </summary>
         public SolidColorBrush BackgroundTitle { get; set; } = new SolidColorBrush(Colors.WhiteSmoke);
 
+        /// <summary>
+        /// Public field holding the task title
+        /// </summary>
         public string TaskTitleMessage { get; set; } = "Введите наименование задачи...";
 
+        /// <summary>
+        /// Private field holding the state of task title
+        /// </summary>
         private bool TaskHaveTitle = false;
 
+        /// <summary>
+        /// Private field holding task title
+        /// </summary>
         private string _taskTitle;
+
+        /// <summary>
+        /// Public property for field holding task title
+        /// </summary>
         public string TaskTitle 
         {
             get => _taskTitle;
@@ -139,14 +190,29 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Public field holding the background color the task description
+        /// </summary>
         public SolidColorBrush BackgroundDescription { get; set; } = new SolidColorBrush(Colors.WhiteSmoke);
 
+        /// <summary>
+        /// Public field holding message for message box
+        /// </summary>
         public string TaskDescriptionMessage { get; set; } = "Введите описание задачи...";
 
+        /// <summary>
+        /// Private field holding the state of task description
+        /// </summary>
         private bool TaskHaveDescription = false;
 
+        /// <summary>
+        /// Private field holding the task description
+        /// </summary>
         private string _taskDescription;
 
+        /// <summary>
+        /// Public property for field holding the background color the task title
+        /// </summary>
         public string TaskDescription 
         {
             get => _taskDescription;
@@ -172,6 +238,9 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Public field holding the board color the date picker
+        /// </summary>
         public SolidColorBrush BorderDatePicker { get; set; } = new SolidColorBrush(Colors.WhiteSmoke);
 
         /// <summary>
@@ -185,9 +254,13 @@ namespace AppTaskManager.ViewModels
             _MainWindowViewModel = mainViewModel;
             //Initialize instance of the TaskModel class
             InitializeTaskModel();
+            //Initialize collection of categories
             InitializeListCategories();
         }
 
+        /// <summary>
+        /// Get collection of task importance
+        /// </summary>
         private void InitializeListCategories()
         {
             TaskImportancies = new List<string>();
@@ -204,10 +277,11 @@ namespace AppTaskManager.ViewModels
             }
         }
 
-
+        /// <summary>
+        /// Initialize default task or task from input task
+        /// </summary>
         private void InitializeTaskModel()
         {
-            //var indexCategory = Enum.GetValue(typeof(TaskCategory));
             //Initialize observable collection of TaskCheckList
             if (TaskCheckList != null)
             {
@@ -229,42 +303,31 @@ namespace AppTaskManager.ViewModels
             }
             else
             {
-                if (_MainWindowViewModel.SelectedTask.TaskState == TaskState.Deleted || _MainWindowViewModel.SelectedTask.TaskState == TaskState.Completed)
+                _taskModel = new TaskModel();
+                _taskModel.Id = _MainWindowViewModel.SelectedTask.Id;
+                _taskModel.Title = _MainWindowViewModel.SelectedTask.Title;
+                _taskModel.Description = _MainWindowViewModel.SelectedTask.Description;
+                _taskModel.TaskCategory = _MainWindowViewModel.SelectedTask.TaskCategory;
+                _taskModel.TaskImportance = _MainWindowViewModel.SelectedTask.TaskImportance;
+                _taskModel.CreationTime = _MainWindowViewModel.SelectedTask.CreationTime;
+                _taskModel.EndTime = _MainWindowViewModel.SelectedTask.EndTime;
+                _taskModel.StartTime = _MainWindowViewModel.SelectedTask.StartTime;
+                foreach (TaskCheck check in _MainWindowViewModel.SelectedTask.TaskChecks)
                 {
-                    _taskModel = new TaskModel();
-                    _taskModel.Title = _MainWindowViewModel.SelectedTask.Title;
-                    _taskModel.Description = _MainWindowViewModel.SelectedTask.Description;
-                    _taskModel.TaskCategory = _MainWindowViewModel.SelectedTask.TaskCategory;
-                    _taskModel.TaskImportance = _MainWindowViewModel.SelectedTask.TaskImportance;
-                    _taskModel.CreationTime = DateTime.Today;
-                    _taskModel.EndTime = DateTime.Today;
-                    foreach (TaskCheck check in _MainWindowViewModel.SelectedTask.TaskChecks)
+                    TaskCheckList.Add(new TaskCheck()
                     {
-                        TaskCheckList.Add(new TaskCheck() 
-                        { 
-                            Description = check.Description, 
-                            IsComplete = false}
-                        );
+                        Description = check.Description,
+                        IsComplete = false
                     }
-                    TaskTitle = _taskModel.Title;
-                    TaskDescription = _taskModel.Description;
-                    IsNew = true;
+                    );
                 }
-                else
-                {
-                    _taskModel = _MainWindowViewModel.SelectedTask;
-                    TaskTitle = _taskModel.Title;
-                    TaskDescription = _taskModel.Description;
-                    foreach (TaskCheck check in _MainWindowViewModel.SelectedTask.TaskChecks)
-                    {
-                        TaskCheckList.Add(check);
-                    }
-                }
+                TaskTitle = _taskModel.Title;
+                TaskDescription = _taskModel.Description;
             }
         }
 
         /// <summary>
-        /// Add control check command
+        /// Command add control check
         /// </summary>
         public ICommand IAddControlCheck => new RelayCommand(addcheck => AddControlCheck());
 
@@ -293,7 +356,7 @@ namespace AppTaskManager.ViewModels
         }
 
         /// <summary>
-        /// Remove task check command
+        /// Command remove task check
         /// </summary>
         public ICommand IRemoveTaskCheck => new RelayCommand(removetaskcheck => RemoveTaskCheck());
 
@@ -307,7 +370,7 @@ namespace AppTaskManager.ViewModels
         }
 
         /// <summary>
-        /// Add new task command
+        /// Command add new task
         /// </summary>
         public ICommand IAddNewTask => new RelayCommand(addnewtask => AddNewTask());
 
@@ -377,14 +440,24 @@ namespace AppTaskManager.ViewModels
                     newTask.TaskChecks.Add(check);
                 }
                 _MainWindowViewModel.AddTaskToTaskModels(newTask);
-                ClearFields();
             }
             else
             {
-                _MainWindowViewModel.UpdateTask();
-                IsNew = true;
-                ClearFields();
+                if(TaskModel.TaskChecks == null)
+                {
+                    TaskModel.TaskChecks = new List<TaskCheck>();
+                }
+                else
+                {
+                    TaskModel.TaskChecks.Clear();
+                }
+                foreach (TaskCheck check in TaskCheckList)
+                {
+                    TaskModel.TaskChecks.Add(check);
+                }
+                _MainWindowViewModel.UpdateTask(TaskModel);
             }
+            ClearFields();
         }
 
         /// <summary>
@@ -405,6 +478,7 @@ namespace AppTaskManager.ViewModels
         /// </summary>
         private void ClearFields()
         {
+            IsNew = true;
             InitializeTaskModel();
             TaskTitle = "";
             OnPropertyChanged(nameof(TaskTitle));

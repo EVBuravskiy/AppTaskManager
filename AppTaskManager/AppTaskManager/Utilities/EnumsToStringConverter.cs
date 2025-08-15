@@ -1,14 +1,17 @@
 ﻿using AppTaskManager.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AppTaskManager.Utilities
 {
+    /// <summary>
+    /// Converter enum to string
+    /// </summary>
     public class EnumsToStringConverter
     {
+        /// <summary>
+        /// Convert enum to string
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public static string EnumToString(object input)
         {
             if (input is TaskImportance importance)
@@ -33,6 +36,11 @@ namespace AppTaskManager.Utilities
             return "";
         }
 
+        /// <summary>
+        /// Convert string to enum
+        /// </summary>
+        /// <param name="inputstring"></param>
+        /// <returns></returns>
         public static Enum StringToEnum(string inputstring)
         {
             return inputstring switch

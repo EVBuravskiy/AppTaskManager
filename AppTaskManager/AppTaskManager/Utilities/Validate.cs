@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AppTaskManager.Utilities
+﻿namespace AppTaskManager.Utilities
 {
+    /// <summary>
+    /// Validate for validation input data
+    /// </summary>
     public class Validate
     {
+        /// <summary>
+        /// Validate string
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         static public bool ValidateString(string inputString, int length)
         {
             if (String.IsNullOrEmpty(inputString)) return false;
@@ -15,6 +18,11 @@ namespace AppTaskManager.Utilities
             return true;
         }
 
+        /// <summary>
+        /// Trim input string
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
         static public string TrimInputString(string inputString)
         {
             return inputString.Trim();

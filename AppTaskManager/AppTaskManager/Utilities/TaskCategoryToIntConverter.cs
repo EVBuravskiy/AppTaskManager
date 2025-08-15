@@ -1,18 +1,23 @@
 ﻿using AppTaskManager.Models;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
-using System.Windows.Media;
 
 namespace AppTaskManager.Utilities
 {
+    /// <summary>
+    /// Converter enum to int
+    /// </summary>
     [ValueConversion(typeof(TaskCategory), typeof(int))]
     class TaskCategoryToIntConverter: IValueConverter
     {
+        /// <summary>
+        /// Convert enum to int
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is TaskCategory category)
@@ -27,6 +32,14 @@ namespace AppTaskManager.Utilities
             return 0;
         }
 
+        /// <summary>
+        /// Convert int to enum
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             int inputvalue = (int)value;

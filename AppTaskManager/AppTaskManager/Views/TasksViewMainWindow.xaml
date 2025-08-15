@@ -34,7 +34,7 @@
             <ColumnDefinition Width="80" />
             <ColumnDefinition Width="435" />
             <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="255" />
+            <ColumnDefinition Width="270" />
         </Grid.ColumnDefinitions>
 
 
@@ -137,7 +137,7 @@
                       BorderBrush="Transparent"
                       HorizontalContentAlignment="Left"
                       ItemsSource="{Binding TaskModels}"
-                      SelectedItem="{Binding SelectedTask}">
+                      SelectedItem="{Binding SelectedTask, Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <uc:TaskItemView Height="145" Width="400" Background="WhiteSmoke"/>
@@ -299,7 +299,8 @@
                       ItemsSource="{Binding EndTimeTaskModels}"
                       SelectedItem="{Binding SelectedTask}"
                       BorderThickness="0"
-                      Background="{StaticResource TaskListBackground}">
+                      Background="{StaticResource TaskListBackground}"
+                      HorizontalContentAlignment="Left">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                             <uc:TaskItemSmallView Height="110" Width="240" Background="WhiteSmoke"/>

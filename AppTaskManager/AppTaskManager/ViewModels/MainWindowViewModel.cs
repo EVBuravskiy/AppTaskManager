@@ -2,56 +2,71 @@
 using AppTaskManager.Models;
 using AppTaskManager.Views;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Drawing;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
 using static AppTaskManager.Views.TasksViewMainWindow;
 
 namespace AppTaskManager.ViewModels
 {
+    /// <summary>
+    /// Main Window View Model
+    /// </summary>
     public class MainWindowViewModel : BaseObservableClass
     {
+        /// <summary>
+        /// Field storing an instance of the Task View Main Window
+        /// </summary>
+
         private TasksViewMainWindow TasksViewMainWindow;
 
+        /// <summary>
+        /// Field storing selected task
+        /// </summary>
         private TaskModel _selectedTask;
+
+        /// <summary>
+        /// Property for field of selected task
+        /// </summary>
         public TaskModel SelectedTask
         {
             get { return _selectedTask; }
             set
             {
                 _selectedTask = value;
-                if (value == null)
+                if (value != null)
                 {
-                    CreateDefaultSelectTask();
-                }
-                TaskImportance = _selectedTask.TaskImportance;
-                foreach (var check in _selectedTask.TaskChecks)
-                {
-                    if (check.IsComplete == false)
+                    TaskImportance = _selectedTask.TaskImportance;
+                    foreach (var check in _selectedTask.TaskChecks)
                     {
-                        IsCompleted = false;
-                        break;
+                        if (check.IsComplete == false)
+                        {
+                            IsCompleted = false;
+                            break;
+                        }
+                        IsCompleted = true;
                     }
-                    IsCompleted = true;
-                }
-                CheckCount = _selectedTask.TaskChecks.Count;
-                CheckChecked = 0;
-                foreach (var check in _selectedTask.TaskChecks)
-                {
-                    if (check.IsComplete == true)
+                    CheckCount = _selectedTask.TaskChecks.Count;
+                    CheckChecked = 0;
+                    foreach (var check in _selectedTask.TaskChecks)
                     {
-                        CheckChecked++;
+                        if (check.IsComplete == true)
+                        {
+                            CheckChecked++;
+                        }
                     }
                 }
                 OnPropertyChanged(nameof(SelectedTask));
             }
         }
 
+        /// <summary>
+        /// Field storing task importance
+        /// </summary>
         private TaskImportance _taskImportance;
+
+        /// <summary>
+        /// Property for field of task importance
+        /// </summary>
         public TaskImportance TaskImportance
         {
             get { return _taskImportance; }
@@ -62,13 +77,29 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Field storing task controller
+        /// </summary>
         public ITaskController TaskController;
 
+        /// <summary>
+        /// Collection of tasks
+        /// </summary>
         public ObservableCollection<TaskModel> TaskModels { get; private set; }
 
+        /// <summary>
+        /// Collection of tasks with upcoming due dates
+        /// </summary>
         public ObservableCollection<TaskModel> EndTimeTaskModels {  get; private set; }
 
+        /// <summary>
+        /// Field storing the selected task execution date
+        /// </summary>
         private DateTime _selectedDate;
+
+        /// <summary>
+        /// Property for field storing the selected task execution date
+        /// </summary>
         public DateTime SelectedDate 
         {
             get => _selectedDate;
@@ -80,7 +111,14 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Field storing the task title for the search
+        /// </summary>
         private string _searchTitle;
+
+        /// <summary>
+        /// Property for field storing the task title for the search
+        /// </summary>
         public string SearchTitle
         {
             get { return _searchTitle; }
@@ -91,9 +129,19 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Property that stores the state of the enabled checkbox
+        /// </summary>
         public bool checkBoxEnabled { get; set; }
 
+        /// <summary>
+        /// Field that stores the state of the task state
+        /// </summary>
         private bool _isCompleted;
+
+        /// <summary>
+        /// Property for field that stores the state of the task state
+        /// </summary>
         public bool IsCompleted
         {
             get => _isCompleted;
@@ -104,7 +152,14 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Field storing the number of task checks 
+        /// </summary>
         private double _checkCount;
+
+        /// <summary>
+        /// Property for the field storing the number of task checks
+        /// </summary>
         public double CheckCount {
             get => _checkCount;
             set
@@ -114,7 +169,14 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Field storing the check state
+        /// </summary>
         private double _checkChecked;
+
+        /// <summary>
+        /// Property for the field storing the check state
+        /// </summary>
         public double CheckChecked 
         {
             get => _checkChecked;
@@ -125,11 +187,24 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Property code behind for calendar
+        /// </summary>
         public ICodeBehind MainWindowCodeBehind { get; set; }
 
+        /// <summary>
+        /// Property for collection of task dates
+        /// </summary>
         public List<DateTime> TasksDates { get; set; }
 
+        /// <summary>
+        /// Field storing collection of selected dates from tasks
+        /// </summary>
         private List<DateTime> _selectedDates;
+
+        /// <summary>
+        /// Property for the field storing collection of selected dates from tasks
+        /// </summary>
         public List<DateTime> SelectedDates 
         { 
             get => _selectedDates;
@@ -140,22 +215,43 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Main Window View Model Constructor
+        /// </summary>
+        /// <param name="mainWindow"></param>
         public MainWindowViewModel(TasksViewMainWindow mainWindow)
         {
+            //Initialize Task Controller
             TaskController = new MockTaskController();
+
+            //Load uncompleted tasks into tasks collection
             LoadUncompletedTasks();
+
+            //Initialize task importance
             TaskImportance = SelectedTask.TaskImportance;
+
+            //Initialize collection of tasks with upcoming due dates
             InitializeEndTimeTask();
-            InitializeDates();
+
+            //Initialize collection of selected dates
             SelectedDates = new List<DateTime>();
 
+            //Initialize dates for calendar
+            InitializeDates();
+
+            //Initialize code behind
             MainWindowCodeBehind = mainWindow;
+
+            //Initialize code behind with collection of task dates
             MainWindowCodeBehind.SelectManyDates(TasksDates);
         }
 
+        /// <summary>
+        /// Create default select task
+        /// </summary>
         private void CreateDefaultSelectTask()
         {
-            _selectedTask = new TaskModel()
+            SelectedTask = new TaskModel()
             {
                 Id = 0,
                 Title = "Наименование задачи",
@@ -171,12 +267,20 @@ namespace AppTaskManager.ViewModels
             };
         }
 
+        /// <summary>
+        /// Get collection of tasks with upcoming due dates
+        /// </summary>
         private void InitializeEndTimeTask()
         {
             var currentTime = DateTime.Today;
             if (EndTimeTaskModels == null)
             {
                 EndTimeTaskModels = new ObservableCollection<TaskModel>();
+            }
+            int currentTaskId = 0;
+            if (SelectedTask != null)
+            {
+                currentTaskId = SelectedTask.Id;
             }
             EndTimeTaskModels.Clear();
             foreach(var task in TaskModels)
@@ -186,17 +290,36 @@ namespace AppTaskManager.ViewModels
                 if (result1 >= 0 && (task.TaskState != TaskState.Completed || task.TaskState != TaskState.Deleted))
                 {
                     EndTimeTaskModels.Add(task);
-                    task.TaskImportance = TaskImportance.High;
+                    if (task.TaskImportance != TaskImportance.Critical)
+                    {
+                        task.TaskImportance = TaskImportance.High;
+                    }
                 }
                 int result2 = DateTime.Compare(currentTime, task.EndTime);
                 if (result2 > 0 && (task.TaskState != TaskState.Completed || task.TaskState != TaskState.Deleted))
                 {
                     task.TaskState = TaskState.Late;
-                    task.TaskImportance = TaskImportance.High;
+                    task.TaskImportance = TaskImportance.Critical;
                 }
+                TaskController.UpdateTask(task);
+            }
+            if (currentTaskId != 0)
+            {
+                GetCurrentTaskById(currentTaskId);
+            }
+            else if (TaskModels.Count > 0)
+            {
+                SelectedTask = TaskModels.First();
+            }
+            else
+            {
+                CreateDefaultSelectTask();
             }
         }
 
+        /// <summary>
+        /// Get collection of task dates
+        /// </summary>
         private void InitializeDates()
         {
             TasksDates = new List<DateTime>();
@@ -206,6 +329,10 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Load task with selected dates
+        /// </summary>
+        /// <param name="selectedDates"></param>
         public void LoadTasksSelectedDates(List<DateTime> selectedDates)
         {
             if (TaskModels == null)
@@ -226,14 +353,30 @@ namespace AppTaskManager.ViewModels
                 MessageBox.Show("В заданном диапазоне задачи не найдены");
                 LoadUncompletedTasks();
             }
+            else
+            {
+                SelectedTask = TaskModels.First();
+            }
         }
 
+        /// <summary>
+        /// Command load uncompleted tasks
+        /// </summary>
         public ICommand ILoadUncompletedTasks => new RelayCommand(all => LoadUncompletedTasks());
+
+        /// <summary>
+        /// Load uncompleted tasks
+        /// </summary>
         private void LoadUncompletedTasks()
         {
             if (TaskModels == null)
             {
                 TaskModels = new ObservableCollection<TaskModel>();
+            }
+            int currentTaskId = 0;
+            if(SelectedTask != null)
+            {
+                currentTaskId = SelectedTask.Id;
             }
             TaskModels.Clear();
             var tasks = TaskController.GetAllTasks();
@@ -241,43 +384,106 @@ namespace AppTaskManager.ViewModels
             {
                 if (task.TaskState != TaskState.Completed && task.TaskState != TaskState.Deleted)
                 {
-                    TaskModels.Add(task);
+                    TaskModel newTask = new TaskModel()
+                    {
+                        Id = task.Id,
+                        Title = task.Title,
+                        Description = task.Description,
+                        CreationTime = task.CreationTime.Date,
+                        StartTime = task.StartTime,
+                        EndTime = task.EndTime.Date,
+                        IsCompleted = task.IsCompleted,
+                        TaskState = task.TaskState,
+                        TaskCategory = task.TaskCategory,
+                        TaskImportance = task.TaskImportance,
+                        TaskChecks = new List<TaskCheck>()
+                    };
+                    foreach (TaskCheck check in task.TaskChecks)
+                    {
+                        newTask.TaskChecks.Add(check);
+                    }
+                    TaskModels.Add(newTask);
                 }
             }
-            if (TaskModels.Count > 0)
+            if (currentTaskId != 0)
             {
-                if (SelectedTask == null || SelectedTask.Id == 0)
-                {
-                    SelectedTask = TaskModels.First();
-                }
+                GetCurrentTaskById(currentTaskId);
             }
-            else if(SelectedTask.Id != 0) CreateDefaultSelectTask();
+            else if(TaskModels.Count > 0) 
+            {
+                SelectedTask = TaskModels.First();
+            }
+            else
+            {
+                CreateDefaultSelectTask();
+            }
         }
 
+        /// <summary>
+        /// Command load all tasks
+        /// </summary>
         public ICommand ILoadAllTasks => new RelayCommand(all => LoadAllTasks());
+
+        /// <summary>
+        /// Load all tasks
+        /// </summary>
         private void LoadAllTasks()
         {
             if (TaskModels == null)
             {
                 TaskModels = new ObservableCollection<TaskModel>();
             }
+            int currentTaskId = 0;
+            if (SelectedTask != null)
+            {
+                currentTaskId = SelectedTask.Id;
+            }
             TaskModels.Clear();
             var tasks = TaskController.GetAllTasks();
             foreach (var task in tasks)
             {
-                TaskModels.Add(task);
-            }
-            if (TaskModels.Count > 0)
-            {
-                if (SelectedTask == null || SelectedTask.Id == 0)
+                TaskModel newTask = new TaskModel()
                 {
-                    SelectedTask = TaskModels.First();
+                    Id = task.Id,
+                    Title = task.Title,
+                    Description = task.Description,
+                    CreationTime = task.CreationTime.Date,
+                    StartTime = task.StartTime,
+                    EndTime = task.EndTime.Date,
+                    IsCompleted = task.IsCompleted,
+                    TaskState = task.TaskState,
+                    TaskCategory = task.TaskCategory,
+                    TaskImportance = task.TaskImportance,
+                    TaskChecks = new List<TaskCheck>()
+                };
+                foreach (TaskCheck check in task.TaskChecks)
+                {
+                    newTask.TaskChecks.Add(check);
                 }
+                TaskModels.Add(newTask);
             }
-            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
+            if (currentTaskId != 0)
+            {
+                GetCurrentTaskById(currentTaskId);
+            }
+            else if (TaskModels.Count > 0)
+            {
+                SelectedTask = TaskModels.First();
+            }
+            else
+            {
+                CreateDefaultSelectTask();
+            }
         }
 
+        /// <summary>
+        /// Command load critical importance tasks
+        /// </summary>
         public ICommand ILoadCriticalTasks => new RelayCommand(critical => LoadCriticalTasks());
+
+        /// <summary>
+        /// Load critical importance tasks
+        /// </summary>
         private void LoadCriticalTasks()
         {
             if (TaskModels == null)
@@ -290,20 +496,45 @@ namespace AppTaskManager.ViewModels
             {
                 if (task.TaskImportance == TaskImportance.Critical)
                 {
-                    TaskModels.Add(task);
+                    TaskModel newTask = new TaskModel()
+                    {
+                        Id = task.Id,
+                        Title = task.Title,
+                        Description = task.Description,
+                        CreationTime = task.CreationTime.Date,
+                        StartTime = task.StartTime,
+                        EndTime = task.EndTime.Date,
+                        IsCompleted = task.IsCompleted,
+                        TaskState = task.TaskState,
+                        TaskCategory = task.TaskCategory,
+                        TaskImportance = task.TaskImportance,
+                        TaskChecks = new List<TaskCheck>()
+                    };
+                    foreach (TaskCheck check in task.TaskChecks)
+                    {
+                        newTask.TaskChecks.Add(check);
+                    }
+                    TaskModels.Add(newTask);
                 }
             }
             if (TaskModels.Count > 0)
             {
-                if (SelectedTask == null || SelectedTask.Id == 0)
-                {
-                    SelectedTask = TaskModels.First();
-                }
+                SelectedTask = TaskModels.First();
             }
-            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
+            else
+            {
+                CreateDefaultSelectTask();
+            }
         }
 
+        /// <summary>
+        /// Command load high importance tasks 
+        /// </summary>
         public ICommand ILoadHighTasks => new RelayCommand(high => LoadHighTasks());
+
+        /// <summary>
+        /// Load high importance tasks 
+        /// </summary>
         private void LoadHighTasks()
         {
             if (TaskModels == null)
@@ -316,20 +547,45 @@ namespace AppTaskManager.ViewModels
             {
                 if (task.TaskImportance == TaskImportance.High)
                 {
-                    TaskModels.Add(task);
+                    TaskModel newTask = new TaskModel()
+                    {
+                        Id = task.Id,
+                        Title = task.Title,
+                        Description = task.Description,
+                        CreationTime = task.CreationTime.Date,
+                        StartTime = task.StartTime,
+                        EndTime = task.EndTime.Date,
+                        IsCompleted = task.IsCompleted,
+                        TaskState = task.TaskState,
+                        TaskCategory = task.TaskCategory,
+                        TaskImportance = task.TaskImportance,
+                        TaskChecks = new List<TaskCheck>()
+                    };
+                    foreach (TaskCheck check in task.TaskChecks)
+                    {
+                        newTask.TaskChecks.Add(check);
+                    }
+                    TaskModels.Add(newTask);
                 }
             }
             if (TaskModels.Count > 0)
             {
-                if (SelectedTask == null || SelectedTask.Id == 0)
-                {
-                    SelectedTask = TaskModels.First();
-                }
+                SelectedTask = TaskModels.First();
             }
-            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
+            else
+            {
+                CreateDefaultSelectTask();
+            }
         }
 
+        /// <summary>
+        /// Command load medium importance tasks
+        /// </summary>
         public ICommand ILoadMediumTasks => new RelayCommand(medium => LoadMediumTasks());
+
+        /// <summary>
+        /// Load medium importance tasks
+        /// </summary>
         private void LoadMediumTasks()
         {
             if (TaskModels == null)
@@ -342,20 +598,45 @@ namespace AppTaskManager.ViewModels
             {
                 if (task.TaskImportance == TaskImportance.Medium)
                 {
-                    TaskModels.Add(task);
+                    TaskModel newTask = new TaskModel()
+                    {
+                        Id = task.Id,
+                        Title = task.Title,
+                        Description = task.Description,
+                        CreationTime = task.CreationTime.Date,
+                        StartTime = task.StartTime,
+                        EndTime = task.EndTime.Date,
+                        IsCompleted = task.IsCompleted,
+                        TaskState = task.TaskState,
+                        TaskCategory = task.TaskCategory,
+                        TaskImportance = task.TaskImportance,
+                        TaskChecks = new List<TaskCheck>()
+                    };
+                    foreach (TaskCheck check in task.TaskChecks)
+                    {
+                        newTask.TaskChecks.Add(check);
+                    }
+                    TaskModels.Add(newTask);
                 }
             }
             if (TaskModels.Count > 0)
             {
-                if (SelectedTask == null || SelectedTask.Id == 0)
-                {
-                    SelectedTask = TaskModels.First();
-                }
+                SelectedTask = TaskModels.First();
             }
-            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
+            else
+            {
+                CreateDefaultSelectTask();
+            }
         }
 
+        /// <summary>
+        /// Command load low importance tasks
+        /// </summary>
         public ICommand ILoadLowTasks => new RelayCommand(low => LoadLowTasks());
+
+        /// <summary>
+        /// Load low importance tasks
+        /// </summary>
         private void LoadLowTasks()
         {
             if (TaskModels == null)
@@ -368,21 +649,45 @@ namespace AppTaskManager.ViewModels
             {
                 if (task.TaskImportance == TaskImportance.Low)
                 {
-                    TaskModels.Add(task);
+                    TaskModel newTask = new TaskModel()
+                    {
+                        Id = task.Id,
+                        Title = task.Title,
+                        Description = task.Description,
+                        CreationTime = task.CreationTime.Date,
+                        StartTime = task.StartTime,
+                        EndTime = task.EndTime.Date,
+                        IsCompleted = task.IsCompleted,
+                        TaskState = task.TaskState,
+                        TaskCategory = task.TaskCategory,
+                        TaskImportance = task.TaskImportance,
+                        TaskChecks = new List<TaskCheck>()
+                    };
+                    foreach (TaskCheck check in task.TaskChecks)
+                    {
+                        newTask.TaskChecks.Add(check);
+                    }
+                    TaskModels.Add(newTask);
                 }
             }
             if (TaskModels.Count > 0)
             {
-                if (SelectedTask == null || SelectedTask.Id == 0)
-                {
-                    SelectedTask = TaskModels.First();
-                }
+                SelectedTask = TaskModels.First();
             }
-            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
+            else
+            {
+                CreateDefaultSelectTask();
+            }
         }
 
+        /// <summary>
+        /// Command load completed tasks
+        /// </summary>
         public ICommand ILoadCompletedTasks => new RelayCommand(completed => LoadCompletedTasks());
 
+        /// <summary>
+        /// Load completed tasks
+        /// </summary>
         private void LoadCompletedTasks()
         {
             if (TaskModels == null)
@@ -395,21 +700,45 @@ namespace AppTaskManager.ViewModels
             {
                 if (task.IsCompleted)
                 {
-                    TaskModels.Add(task);
+                    TaskModel newTask = new TaskModel()
+                    {
+                        Id = task.Id,
+                        Title = task.Title,
+                        Description = task.Description,
+                        CreationTime = task.CreationTime.Date,
+                        StartTime = task.StartTime,
+                        EndTime = task.EndTime.Date,
+                        IsCompleted = task.IsCompleted,
+                        TaskState = task.TaskState,
+                        TaskCategory = task.TaskCategory,
+                        TaskImportance = task.TaskImportance,
+                        TaskChecks = new List<TaskCheck>()
+                    };
+                    foreach (TaskCheck check in task.TaskChecks)
+                    {
+                        newTask.TaskChecks.Add(check);
+                    }
+                    TaskModels.Add(newTask);
                 }
             }
             if (TaskModels.Count > 0)
             {
-                if (SelectedTask == null || SelectedTask.Id == 0)
-                {
-                    SelectedTask = TaskModels.First();
-                }
+                SelectedTask = TaskModels.First();
             }
-            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
+            else
+            {
+                CreateDefaultSelectTask();
+            }
         }
 
+        /// <summary>
+        /// Command load deleted tasks
+        /// </summary>
         public ICommand ILoadDeletedTasks => new RelayCommand(deleted => LoadDeletedTasks());
 
+        /// <summary>
+        /// Load deleted tasks
+        /// </summary>
         private void LoadDeletedTasks()
         {
             if (TaskModels == null)
@@ -422,21 +751,45 @@ namespace AppTaskManager.ViewModels
             {
                 if (task.TaskState == TaskState.Deleted)
                 {
-                    TaskModels.Add(task);
+                    TaskModel newTask = new TaskModel()
+                    {
+                        Id = task.Id,
+                        Title = task.Title,
+                        Description = task.Description,
+                        CreationTime = task.CreationTime.Date,
+                        StartTime = task.StartTime,
+                        EndTime = task.EndTime.Date,
+                        IsCompleted = task.IsCompleted,
+                        TaskState = task.TaskState,
+                        TaskCategory = task.TaskCategory,
+                        TaskImportance = task.TaskImportance,
+                        TaskChecks = new List<TaskCheck>()
+                    };
+                    foreach (TaskCheck check in task.TaskChecks)
+                    {
+                        newTask.TaskChecks.Add(check);
+                    }
+                    TaskModels.Add(newTask);
                 }
             }
             if (TaskModels.Count > 0)
             {
-                if (SelectedTask == null || SelectedTask.Id == 0)
-                {
-                    SelectedTask = TaskModels.First();
-                }
+                SelectedTask = TaskModels.First();
             }
-            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
+            else
+            {
+                CreateDefaultSelectTask();
+            }
         }
 
+        /// <summary>
+        /// Command load home tasks
+        /// </summary>
         public ICommand ILoadHomeTasks => new RelayCommand(deleted => LoadHomeTasks());
 
+        /// <summary>
+        /// Load home tasks
+        /// </summary>
         private void LoadHomeTasks()
         {
             if (TaskModels == null)
@@ -449,21 +802,45 @@ namespace AppTaskManager.ViewModels
             {
                 if (task.TaskCategory == TaskCategory.Home)
                 {
-                    TaskModels.Add(task);
+                    TaskModel newTask = new TaskModel()
+                    {
+                        Id = task.Id,
+                        Title = task.Title,
+                        Description = task.Description,
+                        CreationTime = task.CreationTime.Date,
+                        StartTime = task.StartTime,
+                        EndTime = task.EndTime.Date,
+                        IsCompleted = task.IsCompleted,
+                        TaskState = task.TaskState,
+                        TaskCategory = task.TaskCategory,
+                        TaskImportance = task.TaskImportance,
+                        TaskChecks = new List<TaskCheck>()
+                    };
+                    foreach (TaskCheck check in task.TaskChecks)
+                    {
+                        newTask.TaskChecks.Add(check);
+                    }
+                    TaskModels.Add(newTask);
                 }
             }
             if (TaskModels.Count > 0)
             {
-                if (SelectedTask == null || SelectedTask.Id == 0)
-                {
-                    SelectedTask = TaskModels.First();
-                }
+                SelectedTask = TaskModels.First();
             }
-            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
+            else
+            {
+                CreateDefaultSelectTask();
+            }
         }
 
+        /// <summary>
+        /// Command load work tasks
+        /// </summary>
         public ICommand ILoadWorkTasks => new RelayCommand(deleted => LoadWorkTasks());
 
+        /// <summary>
+        /// Load work tasks
+        /// </summary>
         private void LoadWorkTasks()
         {
             if (TaskModels == null)
@@ -476,21 +853,45 @@ namespace AppTaskManager.ViewModels
             {
                 if (task.TaskCategory == TaskCategory.Work)
                 {
-                    TaskModels.Add(task);
+                    TaskModel newTask = new TaskModel()
+                    {
+                        Id = task.Id,
+                        Title = task.Title,
+                        Description = task.Description,
+                        CreationTime = task.CreationTime.Date,
+                        StartTime = task.StartTime,
+                        EndTime = task.EndTime.Date,
+                        IsCompleted = task.IsCompleted,
+                        TaskState = task.TaskState,
+                        TaskCategory = task.TaskCategory,
+                        TaskImportance = task.TaskImportance,
+                        TaskChecks = new List<TaskCheck>()
+                    };
+                    foreach (TaskCheck check in task.TaskChecks)
+                    {
+                        newTask.TaskChecks.Add(check);
+                    }
+                    TaskModels.Add(newTask);
                 }
             }
             if (TaskModels.Count > 0)
             {
-                if (SelectedTask == null || SelectedTask.Id == 0)
-                {
-                    SelectedTask = TaskModels.First();
-                }
+                SelectedTask = TaskModels.First();
             }
-            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
+            else
+            {
+                CreateDefaultSelectTask();
+            }
         }
 
+        /// <summary>
+        /// Command load education tasks
+        /// </summary>
         public ICommand ILoadEducationTasks => new RelayCommand(deleted => LoadEducationTasks());
 
+        /// <summary>
+        /// Load education tasks
+        /// </summary>
         private void LoadEducationTasks()
         {
             if (TaskModels == null)
@@ -503,19 +904,40 @@ namespace AppTaskManager.ViewModels
             {
                 if (task.TaskCategory == TaskCategory.Education)
                 {
-                    TaskModels.Add(task);
+                    TaskModel newTask = new TaskModel()
+                    {
+                        Id = task.Id,
+                        Title = task.Title,
+                        Description = task.Description,
+                        CreationTime = task.CreationTime.Date,
+                        StartTime = task.StartTime,
+                        EndTime = task.EndTime.Date,
+                        IsCompleted = task.IsCompleted,
+                        TaskState = task.TaskState,
+                        TaskCategory = task.TaskCategory,
+                        TaskImportance = task.TaskImportance,
+                        TaskChecks = new List<TaskCheck>()
+                    };
+                    foreach (TaskCheck check in task.TaskChecks)
+                    {
+                        newTask.TaskChecks.Add(check);
+                    }
+                    TaskModels.Add(newTask);
                 }
             }
             if (TaskModels.Count > 0)
             {
-                if (SelectedTask == null || SelectedTask.Id == 0)
-                {
-                    SelectedTask = TaskModels.First();
-                }
+                SelectedTask = TaskModels.First();
             }
-            else if (SelectedTask.Id != 0) CreateDefaultSelectTask();
+            else
+            {
+                CreateDefaultSelectTask();
+            }
         }
 
+        /// <summary>
+        /// Add task to task collection
+        /// </summary>
         public void AddTaskToTaskModels(TaskModel newTask)
         {
             TaskController.AddTask(newTask);
@@ -527,7 +949,14 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Command find task by title
+        /// </summary>
         public ICommand IFindTasks => new RelayCommand(find => FindTitleInTasks());
+
+        /// <summary>
+        /// Find task by title
+        /// </summary>
         public void FindTitleInTasks()
         {
             ObservableCollection<TaskModel> searchTask = new ObservableCollection<TaskModel>();
@@ -558,6 +987,9 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Find task by date
+        /// </summary>
         private void FindTasksByDate()
         {
             if (TaskModels == null)
@@ -570,12 +1002,45 @@ namespace AppTaskManager.ViewModels
             {
                 if (task.EndTime == SelectedDate)
                 {
-                    TaskModels.Add(task);
+                    TaskModel newTask = new TaskModel()
+                    {
+                        Id = task.Id,
+                        Title = task.Title,
+                        Description = task.Description,
+                        CreationTime = task.CreationTime.Date,
+                        StartTime = task.StartTime,
+                        EndTime = task.EndTime.Date,
+                        IsCompleted = task.IsCompleted,
+                        TaskState = task.TaskState,
+                        TaskCategory = task.TaskCategory,
+                        TaskImportance = task.TaskImportance,
+                        TaskChecks = new List<TaskCheck>()
+                    };
+                    foreach (TaskCheck check in task.TaskChecks)
+                    {
+                        newTask.TaskChecks.Add(check);
+                    }
+                    TaskModels.Add(newTask);
                 }
+            }
+            if (TaskModels.Count > 0)
+            {
+                SelectedTask = TaskModels.First();
+            }
+            else
+            {
+                CreateDefaultSelectTask();
             }
         }
 
+        /// <summary>
+        /// Command begin task
+        /// </summary>
         public ICommand IBeginTask => new RelayCommand(begin => BeginTask());
+
+        /// <summary>
+        /// Begin task
+        /// </summary>
         private void BeginTask()
         {
             if (SelectedTask.Id == 0)
@@ -589,8 +1054,14 @@ namespace AppTaskManager.ViewModels
         }
 
 
+        /// <summary>
+        /// Command to save the modified task
+        /// </summary>
         public ICommand ISaveChanges => new RelayCommand(update => UpdateTask());
 
+        /// <summary>
+        /// Save the modified task
+        /// </summary>
         public void UpdateTask()
         {
             if (SelectedTask.Id == 0)
@@ -606,9 +1077,34 @@ namespace AppTaskManager.ViewModels
                 SelectedTask.TaskState = TaskState.InProgress;
             }
             TaskController.UpdateTask(SelectedTask);
-            GetCurrentTaskById(SelectedTask.Id);
+            LoadUncompletedTasks();
+            InitializeEndTimeTask();
         }
 
+        public void UpdateTask(TaskModel inputTask)
+        {
+            if (inputTask.Id == 0)
+            {
+                return;
+            }
+            SelectedTask = null;
+            TaskController.UpdateTask(inputTask);
+            LoadUncompletedTasks();
+            InitializeEndTimeTask();
+            GetCurrentTaskById(inputTask.Id);
+        }
+
+        public void InitializeTasks(int id)
+        {
+            LoadUncompletedTasks();
+            InitializeEndTimeTask();
+            GetCurrentTaskById(id);
+        }
+
+        /// <summary>
+        /// Get task by id
+        /// </summary>
+        /// <param name="currentTaskId"></param>
         private void GetCurrentTaskById(int currentTaskId)
         {
             if (TaskModels.Count == 0)
@@ -624,9 +1120,41 @@ namespace AppTaskManager.ViewModels
             {
                 CreateDefaultSelectTask();
             }
+            if (SelectedTask.TaskChecks.Count > 0)
+            {
+                foreach (TaskCheck check in SelectedTask.TaskChecks)
+                {
+                    if (check.IsComplete != true)
+                    {
+                        IsCompleted = false;
+                        SelectedTask.TaskState = TaskState.InProgress;
+                        SelectedTask.IsCompleted = false;
+                        break;
+                    }
+                    SelectedTask.TaskState = TaskState.Completed;
+                    SelectedTask.IsCompleted = true;
+                    IsCompleted = true;
+                }
+            }
+            OnPropertyChanged(nameof(SelectedTask));
+            CheckChecked = 0;
+            foreach (var check in _selectedTask.TaskChecks)
+            {
+                if (check.IsComplete == true)
+                {
+                    CheckChecked++;
+                }
+            }
         }
 
+        /// <summary>
+        /// Command check that all controls are completed
+        /// </summary>
         public ICommand ICheckChecksComplete => new RelayCommand(checks => CheckChecksComplete());
+
+        /// <summary>
+        /// Check that all controls are completed
+        /// </summary>
         public void CheckChecksComplete()
         {
             if (SelectedTask.TaskState != TaskState.InProgress)
@@ -651,22 +1179,31 @@ namespace AppTaskManager.ViewModels
             }
             UpdateTask();
             CheckChecked = 0;
-            foreach (var check in _selectedTask.TaskChecks)
+            if (_selectedTask != null)
             {
-                if (check.IsComplete == true)
+                foreach (var check in _selectedTask.TaskChecks)
                 {
-                    CheckChecked++;
+                    if (check.IsComplete == true)
+                    {
+                        CheckChecked++;
+                    }
                 }
-            }
-            if (!IsCompleted)
-            {
-                LoadUncompletedTasks();
-                InitializeEndTimeTask();
+                if (!IsCompleted)
+                {
+                    LoadUncompletedTasks();
+                    InitializeEndTimeTask();
+                }
             }
         }
 
+        /// <summary>
+        /// Command open edit task window
+        /// </summary>
         public ICommand IOpenEditTask => new RelayCommand(open => OpenNewWindow(false));
 
+        /// <summary>
+        /// Open edit task window
+        /// </summary>
         public ICommand IOpenNewWindow => new RelayCommand(open => OpenNewWindow());
         private void OpenNewWindow(bool isNew = true)
         {
@@ -678,8 +1215,14 @@ namespace AppTaskManager.ViewModels
             newTaskWindow.Show();
         }
 
+        /// <summary>
+        /// Command complete task
+        /// </summary>
         public ICommand ICompletedCommand => new RelayCommand(complete => CompleteTask());
 
+        /// <summary>
+        /// Complete task
+        /// </summary>
         private void CompleteTask()
         {
             if (SelectedTask.Id == 0)
@@ -706,19 +1249,18 @@ namespace AppTaskManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Command delete task
+        /// </summary>
         public ICommand DeleteTaskCommand => new RelayCommand(delete => DeleteTask());
 
         /// <summary>
-        /// Delete task: This method remove task from the list of tasks from the TaskDataService and updates the Tasks collection.
+        /// Delete task: This method specifies the deleted property for the task being deleted
         /// </summary>
         private void DeleteTask()
         {
-            //TaskController.DeleteTask(SelectedTask);
-            //MessageBox.Show("Удаление задачи успешно завершено");
-            //CreateDefaultSelectTask();
-            //TaskImportance = SelectedTask.TaskImportance;
-            //LoadUncompletedTasks();
             SelectedTask.TaskState = TaskState.Deleted;
+            MessageBox.Show("Удаление задачи успешно завершено");
             UpdateTask();
             LoadUncompletedTasks();
             InitializeEndTimeTask();

@@ -1,18 +1,6 @@
 ﻿using AppTaskManager.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using static AppTaskManager.Views.TasksViewMainWindow;
 
 namespace AppTaskManager.Views
@@ -22,13 +10,22 @@ namespace AppTaskManager.Views
     /// </summary>
     public partial class TasksViewMainWindow : Window, ICodeBehind
     {
+        /// <summary>
+        /// Interface code behind for selected dates in calendar
+        /// </summary>
         public interface ICodeBehind
         {
             void SelectManyDates(List<DateTime> manyDates);
         }
 
+        /// <summary>
+        /// Field holding Main Window View Model
+        /// </summary>
         private MainWindowViewModel mainModel;
 
+        /// <summary>
+        /// Task View Main Window constructor
+        /// </summary>
         public TasksViewMainWindow()
         {
             InitializeComponent();
@@ -36,6 +33,11 @@ namespace AppTaskManager.Views
             DataContext = mainModel;
             ((MainWindowViewModel)DataContext).MainWindowCodeBehind = this;
         }
+
+        /// <summary>
+        /// Send a collection of dates to a calendar
+        /// </summary>
+        /// <param name="manyDates"></param>
         public void SelectManyDates(List<DateTime> manyDates)
         {
             SelectedDatesCollection Dates = TaskCalendar.SelectedDates;
@@ -45,6 +47,11 @@ namespace AppTaskManager.Views
             }
         }
 
+        /// <summary>
+        /// Get selected dates from calendar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TaskCalendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count == 1)
