@@ -222,7 +222,7 @@ namespace AppTaskManager.ViewModels
         public MainWindowViewModel(TasksViewMainWindow mainWindow)
         {
             //Initialize Task Controller
-            TaskController = new TaskJsonController();
+            TaskController = new TaskDBController();
 
             //Load uncompleted tasks into tasks collection
             LoadUncompletedTasks();

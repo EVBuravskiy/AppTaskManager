@@ -1,16 +1,24 @@
 ﻿using AppTaskManager.Models;
 using Newtonsoft.Json;
 using System.IO;
-using System.Threading.Tasks;
 
 
 namespace AppTaskManager.Controllers
 {
+    /// <summary>
+    /// Task json controller
+    /// </summary>
     public class TaskJsonController : ITaskController
     {
-
+        /// <summary>
+        /// Field containing the path to the file
+        /// </summary>
         private readonly string _dataPath = "taskdata.json";
 
+        /// <summary>
+        /// Add Task: This method adds a new task to the tasks and saves the JSON.
+        /// </summary>
+        /// <param name="newTask"></param>
         public void AddTask(TaskModel newTask)
         {
             List<TaskModel> _tasks = GetAllTasks().ToList();
@@ -18,6 +26,10 @@ namespace AppTaskManager.Controllers
             SaveTasks(_tasks);
         }
 
+        /// <summary>
+        /// Delete Task: This method removes the task from the task list and saves the JSON.
+        /// </summary>
+        /// <param name="task"></param>
         public void DeleteTask(TaskModel task)
         {
             List<TaskModel> _tasks = GetAllTasks().ToList();
@@ -25,6 +37,10 @@ namespace AppTaskManager.Controllers
             SaveTasks(_tasks);
         }
 
+        /// <summary>
+        /// Generate New Task ID: This method generates a new ID for a new task.
+        /// </summary>
+        /// <returns>new id</returns>
         public int GenerateNewTaskId()
         {
             List<TaskModel> _tasks = GetAllTasks().ToList();
@@ -36,6 +52,10 @@ namespace AppTaskManager.Controllers
             return maxId + 1;
         }
 
+        /// <summary>
+        /// Get all tasks: This method allows you to get and sort all tasks from JSON.
+        /// </summary>
+        /// <returns>Collection of tasks</returns>
         public IEnumerable<TaskModel> GetAllTasks()
         {
             if (!File.Exists(_dataPath))
@@ -52,6 +72,10 @@ namespace AppTaskManager.Controllers
             return _tasks;
         }
 
+        /// <summary>
+        /// Update Task: This method adds tasks in the collection and saves it in JSON format.
+        /// </summary>
+        /// <param name="tasks"></param>
         public void SaveTasks(IEnumerable<TaskModel> tasks)
         {
             var serializedTasks = JsonConvert.SerializeObject(tasks);
@@ -62,6 +86,10 @@ namespace AppTaskManager.Controllers
             File.WriteAllText(_dataPath, serializedTasks);
         }
 
+        /// <summary>
+        /// Update Task: This method updates the task in the collection and saves it in JSON format.
+        /// </summary>
+        /// <param name="task"></param>
         public void UpdateTask(TaskModel inputTask)
         {
             List<TaskModel> _tasks = GetAllTasks().ToList();
