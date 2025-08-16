@@ -309,9 +309,11 @@ namespace AppTaskManager.ViewModels
                 _taskModel.Description = _MainWindowViewModel.SelectedTask.Description;
                 _taskModel.TaskCategory = _MainWindowViewModel.SelectedTask.TaskCategory;
                 _taskModel.TaskImportance = _MainWindowViewModel.SelectedTask.TaskImportance;
+                _taskModel.TaskState = _MainWindowViewModel.SelectedTask.TaskState;
                 _taskModel.CreationTime = _MainWindowViewModel.SelectedTask.CreationTime;
                 _taskModel.EndTime = _MainWindowViewModel.SelectedTask.EndTime;
                 _taskModel.StartTime = _MainWindowViewModel.SelectedTask.StartTime;
+                _taskModel.IsCompleted = _MainWindowViewModel.SelectedTask.IsCompleted;
                 foreach (TaskCheck check in _MainWindowViewModel.SelectedTask.TaskChecks)
                 {
                     TaskCheckList.Add(new TaskCheck()
@@ -323,6 +325,13 @@ namespace AppTaskManager.ViewModels
                 }
                 TaskTitle = _taskModel.Title;
                 TaskDescription = _taskModel.Description;
+                if(_taskModel.IsCompleted || _taskModel.TaskState == TaskState.Completed || _taskModel.TaskState == TaskState.Deleted)
+                {
+                    IsNew = true;
+                    _taskModel.Id = _MainWindowViewModel.TaskController.GenerateNewTaskId();
+                    _taskModel.IsCompleted = false;
+                    _taskModel.TaskState = TaskState.Create;
+                }
             }
         }
 

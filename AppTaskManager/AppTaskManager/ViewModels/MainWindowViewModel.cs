@@ -222,7 +222,7 @@ namespace AppTaskManager.ViewModels
         public MainWindowViewModel(TasksViewMainWindow mainWindow)
         {
             //Initialize Task Controller
-            TaskController = new MockTaskController();
+            TaskController = new TaskJsonController();
 
             //Load uncompleted tasks into tasks collection
             LoadUncompletedTasks();
@@ -283,25 +283,32 @@ namespace AppTaskManager.ViewModels
                 currentTaskId = SelectedTask.Id;
             }
             EndTimeTaskModels.Clear();
+            bool fl = false;
             foreach(var task in TaskModels)
             {
                 var checkTime = task.EndTime.AddDays(-3);
                 int result1 = DateTime.Compare(currentTime, checkTime);
-                if (result1 >= 0 && (task.TaskState != TaskState.Completed || task.TaskState != TaskState.Deleted))
+                if (result1 >= 0 && task.TaskState != TaskState.Completed && task.TaskState != TaskState.Deleted)
                 {
-                    EndTimeTaskModels.Add(task);
                     if (task.TaskImportance != TaskImportance.Critical)
                     {
                         task.TaskImportance = TaskImportance.High;
+                        fl = true;
                     }
+                    EndTimeTaskModels.Add(task);
                 }
                 int result2 = DateTime.Compare(currentTime, task.EndTime);
-                if (result2 > 0 && (task.TaskState != TaskState.Completed || task.TaskState != TaskState.Deleted))
+                if (result2 > 0 && task.TaskState != TaskState.Completed && task.TaskState != TaskState.Deleted)
                 {
                     task.TaskState = TaskState.Late;
                     task.TaskImportance = TaskImportance.Critical;
+                    fl = true;
                 }
-                TaskController.UpdateTask(task);
+                if (fl)
+                {
+                    TaskController.UpdateTask(task);
+                }
+                fl = false;
             }
             if (currentTaskId != 0)
             {
@@ -382,7 +389,7 @@ namespace AppTaskManager.ViewModels
             var tasks = TaskController.GetAllTasks();
             foreach (var task in tasks)
             {
-                if (task.TaskState != TaskState.Completed && task.TaskState != TaskState.Deleted)
+                if (task.TaskState != TaskState.Deleted && task.TaskState != TaskState.Completed)
                 {
                     TaskModel newTask = new TaskModel()
                     {
@@ -405,6 +412,7 @@ namespace AppTaskManager.ViewModels
                     TaskModels.Add(newTask);
                 }
             }
+            
             if (currentTaskId != 0)
             {
                 GetCurrentTaskById(currentTaskId);
@@ -698,7 +706,7 @@ namespace AppTaskManager.ViewModels
             var tasks = TaskController.GetAllTasks();
             foreach (var task in tasks)
             {
-                if (task.IsCompleted)
+                if (task.IsCompleted && task.TaskState == TaskState.Completed)
                 {
                     TaskModel newTask = new TaskModel()
                     {
@@ -941,12 +949,9 @@ namespace AppTaskManager.ViewModels
         public void AddTaskToTaskModels(TaskModel newTask)
         {
             TaskController.AddTask(newTask);
+            CreateDefaultSelectTask();
             LoadUncompletedTasks();
             InitializeEndTimeTask();
-            if (SelectedTask == null)
-            {
-                CreateDefaultSelectTask();
-            }
         }
 
         /// <summary>
@@ -1049,8 +1054,9 @@ namespace AppTaskManager.ViewModels
             }
             SelectedTask.StartTime = DateTime.Now;
             SelectedTask.TaskState = TaskState.InProgress;
-            UpdateTask();
-            GetCurrentTaskById(SelectedTask.Id);
+            TaskController.UpdateTask(SelectedTask);
+            LoadUncompletedTasks();
+            InitializeEndTimeTask();
         }
 
 
@@ -1060,7 +1066,7 @@ namespace AppTaskManager.ViewModels
         public ICommand ISaveChanges => new RelayCommand(update => UpdateTask());
 
         /// <summary>
-        /// Save the modified task
+        /// Save the modified current task
         /// </summary>
         public void UpdateTask()
         {
@@ -1081,24 +1087,19 @@ namespace AppTaskManager.ViewModels
             InitializeEndTimeTask();
         }
 
+        /// <summary>
+        /// Save the modified new or change task
+        /// </summary>
         public void UpdateTask(TaskModel inputTask)
         {
             if (inputTask.Id == 0)
             {
                 return;
             }
-            SelectedTask = null;
             TaskController.UpdateTask(inputTask);
+            CreateDefaultSelectTask();
             LoadUncompletedTasks();
             InitializeEndTimeTask();
-            GetCurrentTaskById(inputTask.Id);
-        }
-
-        public void InitializeTasks(int id)
-        {
-            LoadUncompletedTasks();
-            InitializeEndTimeTask();
-            GetCurrentTaskById(id);
         }
 
         /// <summary>
@@ -1107,36 +1108,17 @@ namespace AppTaskManager.ViewModels
         /// <param name="currentTaskId"></param>
         private void GetCurrentTaskById(int currentTaskId)
         {
-            if (TaskModels.Count == 0)
-            {
-                LoadAllTasks();
-            }
             var currentTask = TaskModels.FirstOrDefault(t => t.Id == currentTaskId);
-            if (currentTask != null)
+            if (currentTask == null)
             {
-                SelectedTask = currentTask;
+                CreateDefaultSelectTask();
+                return;
             }
             else
             {
-                CreateDefaultSelectTask();
+                SelectedTask = currentTask;
             }
-            if (SelectedTask.TaskChecks.Count > 0)
-            {
-                foreach (TaskCheck check in SelectedTask.TaskChecks)
-                {
-                    if (check.IsComplete != true)
-                    {
-                        IsCompleted = false;
-                        SelectedTask.TaskState = TaskState.InProgress;
-                        SelectedTask.IsCompleted = false;
-                        break;
-                    }
-                    SelectedTask.TaskState = TaskState.Completed;
-                    SelectedTask.IsCompleted = true;
-                    IsCompleted = true;
-                }
-            }
-            OnPropertyChanged(nameof(SelectedTask));
+            //OnPropertyChanged(nameof(SelectedTask));
             CheckChecked = 0;
             foreach (var check in _selectedTask.TaskChecks)
             {
@@ -1168,8 +1150,8 @@ namespace AppTaskManager.ViewModels
                     if (check.IsComplete != true)
                     {
                         IsCompleted = false;
-                        SelectedTask.TaskState = TaskState.InProgress;
                         SelectedTask.IsCompleted = false;
+                        SelectedTask.TaskState = TaskState.InProgress;
                         break;
                     }
                     SelectedTask.TaskState = TaskState.Completed;
@@ -1177,7 +1159,7 @@ namespace AppTaskManager.ViewModels
                     IsCompleted = true;
                 }
             }
-            UpdateTask();
+            TaskController.UpdateTask(SelectedTask);
             CheckChecked = 0;
             if (_selectedTask != null)
             {
@@ -1188,12 +1170,13 @@ namespace AppTaskManager.ViewModels
                         CheckChecked++;
                     }
                 }
-                if (!IsCompleted)
-                {
-                    LoadUncompletedTasks();
-                    InitializeEndTimeTask();
-                }
             }
+            if (SelectedTask.IsCompleted)
+            {
+                CreateDefaultSelectTask();
+            }
+            LoadUncompletedTasks();
+            InitializeEndTimeTask();
         }
 
         /// <summary>
@@ -1239,7 +1222,7 @@ namespace AppTaskManager.ViewModels
             }
             SelectedTask.IsCompleted = true;
             SelectedTask.TaskState = TaskState.Completed;
-            UpdateTask();
+            TaskController.UpdateTask(SelectedTask);
             LoadUncompletedTasks();
             InitializeEndTimeTask();
             IsCompleted = false;
@@ -1260,8 +1243,8 @@ namespace AppTaskManager.ViewModels
         private void DeleteTask()
         {
             SelectedTask.TaskState = TaskState.Deleted;
-            MessageBox.Show("Удаление задачи успешно завершено");
-            UpdateTask();
+            TaskController.UpdateTask(SelectedTask);
+            CreateDefaultSelectTask();
             LoadUncompletedTasks();
             InitializeEndTimeTask();
             if (TaskModels.Count > 0)
@@ -1272,6 +1255,7 @@ namespace AppTaskManager.ViewModels
             {
                 CreateDefaultSelectTask();
             }
+            MessageBox.Show("Удаление задачи успешно завершено");
         }
     }
 }

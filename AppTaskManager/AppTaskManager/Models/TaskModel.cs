@@ -81,7 +81,7 @@ namespace AppTaskManager.Models
         public override bool Equals(object? obj)
         {
             if (obj == null) return false;
-            if (obj is TaskModel other) return EndTime == other.EndTime;
+            if (obj is TaskModel other) return Id == other.Id;
             return false;
         }
 
